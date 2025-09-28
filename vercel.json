@@ -2,5 +2,16 @@
   "buildCommand": "npm run build",
   "outputDirectory": "build",
   "devCommand": "npm run dev",
-  "framework": "vite"
+  "framework": "vite",
+  "functions": {
+    "api/server.js": {
+      "runtime": "nodejs18.x"
+    }
+  },
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/server.js"
+    }
+  ]
 }
