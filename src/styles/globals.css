@@ -1,0 +1,704 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --font-size: 16px;
+  --background: #ffffff;
+  --foreground: oklch(0.145 0 0);
+  --card: #ffffff;
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: #030213;
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.95 0.0058 264.53);
+  --secondary-foreground: #030213;
+  --muted: #ececf0;
+  --muted-foreground: #717182;
+  --accent: #e9ebef;
+  --accent-foreground: #030213;
+  --destructive: #d4183d;
+  --destructive-foreground: #ffffff;
+  --border: rgba(0, 0, 0, 0.1);
+  --input: transparent;
+  --input-background: #f3f3f5;
+  --switch-background: #cbced4;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: #030213;
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.145 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.145 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: oklch(0.637 0.237 25.331);
+  --border: oklch(0.269 0 0);
+  --input: oklch(0.269 0 0);
+  --ring: oklch(0.439 0 0);
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(0.269 0 0);
+  --sidebar-ring: oklch(0.439 0 0);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Nunito", ui-sans-serif, system-ui, sans-serif;
+  }
+}
+
+/**
+ * Base typography. This is not applied to elements which have an ancestor with a Tailwind text class.
+ */
+@layer base {
+  :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) {
+    h1 {
+      font-size: var(--text-2xl);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h2 {
+      font-size: var(--text-xl);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h3 {
+      font-size: var(--text-lg);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h4 {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    p {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+
+    label {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    button {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    input {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+  }
+}
+
+html {
+  font-size: var(--font-size);
+}
+
+/* Import YGBVerse Homepage Module */
+@import './ygb-homepage.module.css';
+
+/* Legacy animation names for backward compatibility */
+@keyframes glow-loop {
+  to { 
+    offset-distance: 100%; 
+  }
+}
+
+@keyframes flicker {
+  0%, 100% { 
+    opacity: 1; 
+  }
+  25% { 
+    opacity: 0.15; 
+  }
+  50% { 
+    opacity: 0.05; 
+  }
+  75% { 
+    opacity: 0.4; 
+  }
+}
+
+/* CardNav StarBorder animation */
+@keyframes starBorderGlow {
+  0%, 100% {
+    background-position: 0% 50%;
+    opacity: 0.7;
+  }
+  25% {
+    background-position: 100% 50%;
+    opacity: 1;
+  }
+  50% {
+    background-position: 100% 100%;
+    opacity: 0.8;
+  }
+  75% {
+    background-position: 0% 100%;
+    opacity: 0.9;
+  }
+}
+
+/* Chroma text animation */
+.chroma-text {
+  background-image: linear-gradient(90deg, #8614ff 0, #8614ff 33.33%, #ff0138 40%, #ff6b7a 45%, #474dd6 50%, #6de4db 55%, #8614ff 60%, transparent 66.67%, transparent);
+  background-size: 300% 100%;
+  background-position: 100% 0;
+  will-change: background-position;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-fill-color: transparent;
+  color: transparent;
+}
+
+.chroma-text-animate {
+  animation: chroma-sweep 0.9s ease-in-out 0.1s forwards;
+  filter: blur(1px);
+}
+
+/* Special chroma text animation for CULTURE - ends in #4C1D95 */
+.chroma-text-culture {
+  background-image: linear-gradient(90deg, #4C1D95 0, #4C1D95 33.33%, #ff0138 40%, #ff6b7a 45%, #474dd6 50%, #6de4db 55%, #8614ff 60%, transparent 66.67%, transparent);
+  background-size: 300% 100%;
+  background-position: 100% 0;
+  will-change: background-position;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-fill-color: transparent;
+  color: transparent;
+}
+
+.chroma-text-culture-animate {
+  animation: chroma-sweep-culture 0.9s ease-in-out 0.1s forwards;
+  filter: blur(1px);
+}
+
+/* Special chroma text animation for SUPERCHARGED - ends in #00ffe6 */
+.chroma-text-supercharged {
+  background-image: linear-gradient(90deg, #00ffe6 0, #00ffe6 33.33%, #ff0138 40%, #ff6b7a 45%, #474dd6 50%, #6de4db 55%, #8614ff 60%, transparent 66.67%, transparent);
+  background-size: 300% 100%;
+  background-position: 100% 0;
+  will-change: background-position;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-fill-color: transparent;
+  color: transparent;
+}
+
+.chroma-text-supercharged-animate {
+  animation: chroma-sweep-supercharged 0.9s ease-in-out 0.1s forwards;
+  filter: blur(1px);
+}
+
+@keyframes chroma-sweep {
+  to {
+    background-position-x: 0%;
+    background-position-y: 0px;
+    filter: blur(0px);
+  }
+}
+
+@keyframes chroma-sweep-culture {
+  to {
+    background-position-x: 0%;
+    background-position-y: 0px;
+    filter: blur(0px);
+  }
+}
+
+@keyframes chroma-sweep-supercharged {
+  to {
+    background-position-x: 0%;
+    background-position-y: 0px;
+    filter: blur(0px);
+  }
+}
+
+/* Cool Input Border Animations */
+@keyframes rainbow-chase {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes sparkle-float {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(-8px) scale(1.2);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.02);
+  }
+}
+
+/* Pulse border glow for donation containers */
+@keyframes pulse-border-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 1px rgba(213, 173, 255, 0.4), 0 0 15px rgba(213, 173, 255, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 0 1px rgba(213, 173, 255, 0.6), 0 0 25px rgba(213, 173, 255, 0.4);
+  }
+}
+
+/* Enhanced Input Border Animation - Color Shifting Pulse */
+@keyframes pulse-glow-shifting {
+  0% {
+    opacity: 0.4;
+    transform: scale(1);
+    background-position: 0% 50%;
+  }
+  25% {
+    opacity: 0.7;
+    transform: scale(1.015);
+    background-position: 100% 50%;
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.025);
+    background-position: 100% 100%;
+  }
+  75% {
+    opacity: 0.6;
+    transform: scale(1.015);
+    background-position: 0% 100%;
+  }
+  100% {
+    opacity: 0.4;
+    transform: scale(1);
+    background-position: 0% 50%;
+  }
+}
+
+/* Clean Donation Card Border Animation - No Opacity Dimming */
+@keyframes elegant-card-pulse {
+  0% {
+    border-color: rgba(134, 20, 255, 0.5);
+  }
+  20% {
+    border-color: rgba(154, 82, 235, 0.6);
+  }
+  40% {
+    border-color: rgba(255, 107, 122, 0.6);
+  }
+  60% {
+    border-color: rgba(245, 230, 184, 0.7);
+  }
+  80% {
+    border-color: rgba(34, 197, 94, 0.6);
+  }
+  100% {
+    border-color: rgba(134, 20, 255, 0.5);
+  }
+}
+
+/* Saved opacity-shifting technique for future use */
+@keyframes subtle-opacity-pulse {
+  0% { opacity: 0.5; }
+  20% { opacity: 0.7; }
+  40% { opacity: 0.8; }
+  60% { opacity: 0.7; }
+  80% { opacity: 0.6; }
+  100% { opacity: 0.5; }
+}
+
+/* Subtle breathing effect for the most popular card */
+@keyframes popular-card-breathe {
+  0%, 100% {
+    transform: scale(1.05);
+    box-shadow: 
+      0 0 0 2px rgba(134, 20, 255, 0.4),
+      0 0 30px rgba(134, 20, 255, 0.15),
+      0 0 60px rgba(213, 173, 255, 0.08);
+  }
+  50% {
+    transform: scale(1.08);
+    box-shadow: 
+      0 0 0 2px rgba(109, 0, 224, 0.5),
+      0 0 35px rgba(109, 0, 224, 0.2),
+      0 0 70px rgba(154, 82, 235, 0.12);
+  }
+}
+
+/* Slower hover variant */
+.group:hover [style*="pulse-glow-shifting"] {
+  animation: pulse-glow-shifting-fast 2.5s ease-in-out infinite !important;
+}
+
+@keyframes pulse-glow-shifting-fast {
+  0% {
+    opacity: 0.5;
+    transform: scale(1);
+    background-position: 0% 50%;
+  }
+  25% {
+    opacity: 0.8;
+    transform: scale(1.02);
+    background-position: 100% 50%;
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.035);
+    background-position: 100% 100%;
+  }
+  75% {
+    opacity: 0.7;
+    transform: scale(1.02);
+    background-position: 0% 100%;
+  }
+  100% {
+    opacity: 0.5;
+    transform: scale(1);
+    background-position: 0% 50%;
+  }
+}
+
+/* Metallic Shine Animation for 3D Cards */
+@keyframes metallic-shine {
+  0% {
+    background-position: -200% -200%;
+    opacity: 0.2;
+  }
+  25% {
+    background-position: 0% 0%;
+    opacity: 0.4;
+  }
+  50% {
+    background-position: 200% 200%;
+    opacity: 0.3;
+  }
+  75% {
+    background-position: 100% 100%;
+    opacity: 0.35;
+  }
+  100% {
+    background-position: -200% -200%;
+    opacity: 0.2;
+  }
+}
+
+/* Subtle Shine Animation for Premium Cards */
+@keyframes subtle-shine {
+  0% {
+    background-position: -200% 0%;
+  }
+  50% {
+    background-position: 200% 0%;
+  }
+  100% {
+    background-position: -200% 0%;
+  }
+}
+
+/* Shimmer Text Animation for YGBer Card - Subtle & Less Frequent */
+.shimmer-text {
+  background: linear-gradient(90deg, #8614ff 0%, #a855f7 20%, #c084f5 35%, #d4af37 50%, #c084f5 65%, #a855f7 80%, #8614ff 100%);
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer-sweep 4.5s ease-in-out infinite;
+}
+
+@keyframes shimmer-sweep {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
+}
+
+/* Gold Shimmer Text Animation for $500 Donation Button - Ultra Subtle Single Gold Color */
+.gold-shimmer-text {
+  background: linear-gradient(90deg, #4a5568 0%, #4a5568 40%, #d4af37 50%, #4a5568 60%, #4a5568 100%);
+  background-size: 400% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gold-shimmer-sweep 8s ease-in-out infinite;
+  font-weight: 600;
+}
+
+@keyframes gold-shimmer-sweep {
+  0% {
+    background-position: 200% center;
+  }
+  20% {
+    background-position: 50% center;
+  }
+  80% {
+    background-position: 50% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
+}
+
+/* Premium Rich Gold Gradient Animation for Monthly Donations - Reduced Movement */
+@keyframes rich-gold-gradient-shift {
+  0%, 100% {
+    background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%;
+    filter: brightness(1) contrast(1.05) saturate(1.15);
+  }
+  50% {
+    background-position: 60% 40%, 40% 60%, 0% 0%, 0% 0%;
+    filter: brightness(1.08) contrast(1.1) saturate(1.25);
+  }
+}
+
+/* Rich Gold Border Pulse Animation - More Refined */
+@keyframes rich-gold-border-pulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1);
+    background-position: 0% 50%;
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.015);
+    background-position: 100% 50%;
+  }
+}
+
+/* Purple-to-Gold Crown Color Morph - Desktop Only */
+.crown-icon {
+  color: #8614ff; /* Default purple */
+  transition: color 0.3s ease;
+}
+
+/* Desktop: Crown animation - No Glow */
+@media (min-width: 1024px) {
+  .crown-icon {
+    animation: crown-color-cycle 4s ease-in-out infinite;
+  }
+  
+  @keyframes crown-color-cycle {
+    0%, 100% {
+      color: #8614ff; /* Purple start/end */
+    }
+    25% {
+      color: #9a52eb; /* Light purple */
+    }
+    50% {
+      color: #FFD700; /* Gold middle */
+    }
+    75% {
+      color: #d4af37; /* Dark gold */
+    }
+  }
+}
+
+/* Mobile: Static purple crown - No Glow */
+@media (max-width: 1023px) {
+  .crown-container {
+    animation: none;
+  }
+  
+  .crown-icon {
+    color: #8614ff;
+    animation: none;
+  }
+}
+
+/* Frosted Glass Effect for Feature Cards */
+.frosted {
+  --blur: 1rem;
+  --background-color: hsl(0 0 100% / 20%);
+  --border-color: hsl(0 0 100% / 0);
+  --corner-glow: hsl(0 0 100% / 1);
+  --border-glow: hsl(0 0 100% / 0.8);
+  --corner-glow-size: 2; /* use corner glow as border glow */
+}
+
+.frosted > * {
+  position: relative;
+  z-index: 1;
+}
+
+.frosted .filter {
+  border-radius: inherit;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  mask: linear-gradient(white);
+  mask-clip: padding-box;
+  mask-composite: intersect;
+  mask-repeat: repeat;
+  filter: url(#ice); /* apply SVG filter to the pseudo element */
+}
+
+/* Custom Cursor Animation */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+/* Force Nunito font on absolutely everything except Bungee */
+*:not([style*="Bungee"]):not(.font-bungee):not([class*="Bungee"]), 
+*:not([style*="Bungee"]):not(.font-bungee):not([class*="Bungee"])::before, 
+*:not([style*="Bungee"]):not(.font-bungee):not([class*="Bungee"])::after,
+html,
+body,
+div:not([style*="Bungee"]):not(.font-bungee):not([class*="Bungee"]),
+span:not([style*="Bungee"]):not(.font-bungee):not([class*="Bungee"]),
+p:not([style*="Bungee"]):not(.font-bungee):not([class*="Bungee"]),
+h1, h2, h3, h4, h5, h6,
+a:not([style*="Bungee"]):not(.font-bungee):not([class*="Bungee"]),
+button:not([style*="Bungee"]):not(.font-bungee):not([class*="Bungee"]),
+input,
+textarea,
+select,
+label,
+li,
+ul,
+ol,
+table,
+th,
+td,
+tr {
+  font-family: "Nunito", ui-sans-serif, system-ui, sans-serif !important;
+}
+
+/* Extra aggressive targeting - but exclude Bungee */
+html *:not([style*="Bungee"]):not(.font-bungee):not([class*="Bungee"]) {
+  font-family: "Nunito", ui-sans-serif, system-ui, sans-serif !important;
+}
+
+body *:not([style*="Bungee"]):not(.font-bungee):not([class*="Bungee"]) {
+  font-family: "Nunito", ui-sans-serif, system-ui, sans-serif !important;
+}
+
+/* Override any existing font declarations except Bungee */
+[class*="font-"]:not(.font-bungee):not([class*="Bungee"]) {
+  font-family: "Nunito", ui-sans-serif, system-ui, sans-serif !important;
+}
+
+/* Ensure Bungee fonts work properly */
+[style*="Bungee"], .font-bungee, [class*="Bungee"] {
+  font-family: "Bungee", cursive !important;
+}
+
+/* Import nuclear font override as the last thing */
+@import './font-override.css';

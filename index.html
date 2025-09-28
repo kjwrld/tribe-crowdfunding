@@ -1,0 +1,32 @@
+
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>YGBVerse Home Page</title>
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Bungee&display=swap" rel="stylesheet">
+      <style>
+        /* Inline CSS for maximum priority - Force Nunito everywhere except Bungee */
+        *, *::before, *::after, html, body, div, span, p, h1, h2, h3, h4, h5, h6, a, button, input, textarea, select, label, li, ul, ol, table, th, td, tr {
+          font-family: "Nunito", ui-sans-serif, system-ui, sans-serif !important;
+        }
+        /* Allow Bungee font to override Nunito */
+        [style*="Bungee"], .font-bungee, [class*="Bungee"] {
+          font-family: "Bungee", cursive !important;
+        }
+        html { font-family: "Nunito", ui-sans-serif, system-ui, sans-serif !important; }
+        body { font-family: "Nunito", ui-sans-serif, system-ui, sans-serif !important; }
+        #root { font-family: "Nunito", ui-sans-serif, system-ui, sans-serif !important; }
+        #root * { font-family: "Nunito", ui-sans-serif, system-ui, sans-serif !important; }
+      </style>
+    </head>
+
+    <body>
+      <div id="root"></div>
+      <script type="module" src="/src/main.tsx"></script>
+    </body>
+  </html>
+  

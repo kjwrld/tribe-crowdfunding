@@ -1,0 +1,44 @@
+/* Font loading and overrides */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Bungee&display=swap');
+
+/* Standard Nunito override - targeting most elements but allowing inline styles to override */
+html,
+html *,
+body,
+body *,
+#root,
+#root *,
+div,
+span,
+p,
+h1, h2, h3, h4, h5, h6,
+a,
+button,
+input,
+textarea,
+select,
+label,
+li,
+ul,
+ol,
+table,
+th,
+td,
+tr,
+nav,
+header,
+footer,
+section,
+article,
+aside,
+main {
+  font-family: "Nunito", ui-sans-serif, system-ui, sans-serif !important;
+}
+
+/* Specific Bungee font override with maximum specificity */
+html body #root .bungee-font,
+html body #root .bungee-font *,
+.bungee-font,
+.bungee-font * {
+  font-family: "Bungee", cursive !important;
+}
