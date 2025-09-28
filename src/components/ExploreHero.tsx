@@ -3,6 +3,7 @@ import { useRef, useState, useEffect } from 'react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { ArrowRight, Sparkles, Zap } from 'lucide-react';
 import { DonationDialog } from './DonationDialog';
+import { R3FRocketModel } from './R3FRocketModel';
 
 const rocketImageUrl = "https://images.unsplash.com/photo-1720214658819-2676e74b4c69?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxyb2NrZXQlMjBsYXVuY2glMjBzcGFjZXxlbnwxfHx8fDE3NTg1OTg5NjJ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral";
 
@@ -140,46 +141,17 @@ function ExploreHeroButtons({ onNavigate, onConfetti }: { onNavigate?: (page: "h
   );
 }
 
-function RocketImage() {
-  const imageRef = useRef(null);
-  const imageInView = useInView(imageRef, { once: true, margin: "-20%" });
-
+function RocketCanvas() {
   return (
-    <motion.div
-      ref={imageRef}
+    <div
       className="relative w-full h-full flex items-center justify-center"
-      initial={{ scale: 0.8, opacity: 0, y: 50 }}
-      animate={{ 
-        scale: imageInView ? 1 : 0.8, 
-        opacity: imageInView ? 1 : 0,
-        y: imageInView ? 0 : 50
-      }}
-      transition={{ duration: 1, delay: imageInView ? 0.3 : 0, ease: "easeOut" }}
     >
-      {/* Floating animation wrapper */}
-      <motion.div
-        className="relative"
-        animate={{
-          y: [0, -10, 0],
-          rotate: [0, 1, 0, -1, 0],
-        }}
-        transition={{
-          duration: 6,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-      >
-        <ImageWithFallback
-          src={rocketImageUrl}
-          alt="Rocket launching into space representing supercharged STEM adventures"
-          className="w-full h-[350px] md:h-[450px] lg:h-[500px] xl:h-[550px] max-w-[400px] lg:max-w-[500px] object-contain rounded-[24px] shadow-2xl"
-        />
-        
-        {/* Glowing background effect */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#8614ff]/20 via-transparent to-[#d5adff]/10 rounded-[24px] blur-3xl -z-10 scale-110" />
-      </motion.div>
-
-      {/* Floating particles */}
+      {/* R3F Rocket Canvas with Full Features */}
+      <div className="w-full h-[350px] md:h-[450px] lg:h-[500px] xl:h-[550px] max-w-[400px] lg:max-w-[500px] rounded-[24px] overflow-hidden">
+        <R3FRocketModel className="w-full h-full" />
+      </div>
+      
+      {/* Floating particles - keeping the space aesthetic */}
       <motion.div
         className="absolute top-[20%] left-[10%] w-3 h-3 bg-[#8614ff] rounded-full"
         animate={{
@@ -222,7 +194,7 @@ function RocketImage() {
           delay: 0.5
         }}
       />
-    </motion.div>
+    </div>
   );
 }
 
@@ -268,9 +240,9 @@ export function ExploreHero({ onNavigate, onConfetti }: ExploreHeroProps) {
       <div className="max-w-7xl mx-auto w-full">
         {/* Mobile/Tablet layout: Image above, text/buttons below */}
         <div className="lg:hidden flex flex-col items-center justify-center gap-12 text-center">
-          {/* Rocket Image */}
+          {/* 3D Rocket Canvas */}
           <div className="w-full max-w-[400px] h-[350px] md:h-[400px]">
-            <RocketImage />
+            <RocketCanvas />
           </div>
           
           {/* Text and buttons section */}
@@ -290,9 +262,9 @@ export function ExploreHero({ onNavigate, onConfetti }: ExploreHeroProps) {
             <ExploreHeroButtons onNavigate={onNavigate} onConfetti={onConfetti} />
           </div>
           
-          {/* Right side - Rocket Image */}
+          {/* Right side - 3D Rocket Canvas */}
           <div className="flex-1 max-w-[600px] h-[500px] xl:h-[550px]">
-            <RocketImage />
+            <RocketCanvas />
           </div>
         </div>
       </div>

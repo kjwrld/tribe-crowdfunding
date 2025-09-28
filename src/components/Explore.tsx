@@ -110,7 +110,7 @@ interface ExploreProps {
 }
 
 const sections = [
-    { id: "hero-section", label: "Hero", number: "001" },
+    { id: "hero-section", label: "Explore", number: "001" },
     { id: "kids-section", label: "Kids", number: "002" },
     { id: "families-section", label: "Families", number: "003" },
     { id: "educators-section", label: "Educators", number: "004" },
