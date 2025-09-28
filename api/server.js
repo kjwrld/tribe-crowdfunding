@@ -6,6 +6,9 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const app = express();
 const PORT = process.env.PORT || 3002;
 
+// Connect Account ID (from environment variable)
+const CONNECT_ACCOUNT_ID = process.env.STRIPE_CONNECT_ACCOUNT_ID;
+
 // CORS configuration
 app.use(cors({
   origin: function (origin, callback) {
@@ -30,9 +33,84 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Stripe API server is running' });
 });
 
+// Test Connect account and products
+app.get('/api/test-connect', async (req, res) => {
+  try {
+    if (!CONNECT_ACCOUNT_ID) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'STRIPE_CONNECT_ACCOUNT_ID environment variable not set' 
+      });
+    }
+    
+    console.log(`🔍 Testing Connect account: ${CONNECT_ACCOUNT_ID}`);
+    
+    // Test 1: Get account info
+    const account = await stripe.accounts.retrieve(CONNECT_ACCOUNT_ID);
+    console.log('✅ Account retrieved:', account.id, account.business_profile?.name || 'No business name');
+    
+    // Test 2: Get products from Connect account
+    const products = await stripe.products.list(
+      { limit: 10 },
+      { stripeAccount: CONNECT_ACCOUNT_ID }
+    );
+    console.log(`📦 Found ${products.data.length} products in Connect account`);
+    
+    // Test 3: Get prices for each product
+    const productsWithPrices = await Promise.all(
+      products.data.map(async (product) => {
+        const prices = await stripe.prices.list(
+          { product: product.id, limit: 5 },
+          { stripeAccount: CONNECT_ACCOUNT_ID }
+        );
+        return {
+          ...product,
+          prices: prices.data
+        };
+      })
+    );
+    
+    res.json({
+      success: true,
+      account: {
+        id: account.id,
+        name: account.business_profile?.name || 'No business name',
+        email: account.email,
+        country: account.country
+      },
+      products: productsWithPrices.map(p => ({
+        id: p.id,
+        name: p.name,
+        description: p.description,
+        active: p.active,
+        prices: p.prices.map(price => ({
+          id: price.id,
+          amount: price.unit_amount,
+          currency: price.currency,
+          type: price.type,
+          recurring: price.recurring
+        }))
+      }))
+    });
+    
+  } catch (error) {
+    console.error('❌ Connect test failed:', error.message);
+    res.status(500).json({ 
+      success: false,
+      error: error.message,
+      type: error.type,
+      code: error.code
+    });
+  }
+});
+
 // Create Stripe checkout session
 app.post('/api/create-checkout-session', async (req, res) => {
   try {
+    if (!CONNECT_ACCOUNT_ID) {
+      return res.status(500).json({ error: 'Stripe Connect account not configured' });
+    }
+
     const { 
       amount, 
       currency = 'usd', 
@@ -116,7 +194,11 @@ app.post('/api/create-checkout-session', async (req, res) => {
       }];
     }
     
-    const session = await stripe.checkout.sessions.create(sessionConfig);
+    // Create session with Connect account to enable fees
+    const session = await stripe.checkout.sessions.create(
+      sessionConfig,
+      { stripeAccount: CONNECT_ACCOUNT_ID }
+    );
     
     console.log('Checkout session created:', session.id);
     res.json({ 
@@ -144,7 +226,10 @@ app.post('/api/verify-payment', async (req, res) => {
       return res.status(400).json({ error: 'Session ID is required' });
     }
     
-    const session = await stripe.checkout.sessions.retrieve(session_id);
+    const session = await stripe.checkout.sessions.retrieve(
+      session_id,
+      { stripeAccount: CONNECT_ACCOUNT_ID }
+    );
     
     if (session.payment_status === 'paid') {
       const customer = session.customer ? await stripe.customers.retrieve(session.customer) : null;
