@@ -100,7 +100,8 @@ export function useStripeCheckout() {
       console.log('Creating checkout session:', { amount, donationType });
       
       // Call backend API to create Stripe checkout session
-      const response = await fetch('/api/create-checkout-session', {
+      const apiUrl = import.meta.env.DEV ? 'https://tribe-fundraiser-final.vercel.app/api/create-checkout-session' : '/api/create-checkout-session';
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

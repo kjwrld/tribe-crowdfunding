@@ -72,8 +72,8 @@ module.exports = async function handler(req, res) {
 
     const sessionConfig = {
       payment_method_types: ['card'],
-      success_url: `${req.headers.origin || 'https://tribe-fundraiser-final.vercel.app'}/?success=true&session_id={CHECKOUT_SESSION_ID}&amount=${amount}&type=${donationType}`,
-      cancel_url: `${req.headers.origin || 'https://tribe-fundraiser-final.vercel.app'}/?canceled=true`,
+      success_url: `${req.headers?.origin || 'https://tribe-fundraiser-final.vercel.app'}/?success=true&session_id={CHECKOUT_SESSION_ID}&amount=${amount}&type=${donationType}`,
+      cancel_url: `${req.headers?.origin || 'https://tribe-fundraiser-final.vercel.app'}/?canceled=true`,
       metadata: {
         donationType,
         originalAmount: amount.toString()
@@ -177,17 +177,20 @@ module.exports = async function handler(req, res) {
   } catch (error) {
     console.error('Error creating checkout session:', error);
     console.error('Error stack:', error.stack);
-    res.status(500).json({ 
+    
+    // Handle different types of errors
+    if (error.code === 'resource_missing') {
+      return res.status(400).json({
+        error: 'Invalid product configuration',
+        details: error.message,
+        code: error.code
+      });
+    }
+    
+    return res.status(500).json({ 
       error: error.message,
       details: 'Failed to create checkout session',
       code: error.code || 'UNKNOWN_ERROR'
-    });
-  } catch (outerError) {
-    console.error('Outer catch - critical error:', outerError);
-    console.error('Outer error stack:', outerError.stack);
-    return res.status(500).json({
-      error: 'Critical server error',
-      message: outerError.message
     });
   }
 }
