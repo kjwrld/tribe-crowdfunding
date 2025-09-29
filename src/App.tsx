@@ -174,7 +174,7 @@ function FormHeroBanner({ onConfetti }: { onConfetti?: (position: { x: number; y
           amount: amount,
           donationType: 'one-time',
           description: `YGBverse Make Impact Donation - $${amount}`,
-          productId: 'prod_T4fZSmo5mQHFDc' // Your specific product ID
+          productId: 'one-time'
         }),
       });
 

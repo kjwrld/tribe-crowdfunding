@@ -26,15 +26,36 @@ export default async function handler(req, res) {
       currency = 'usd', 
       description = 'YGBverse Donation', 
       donationType = 'one-time',
-      productId = null
+      productId = null,
+      priceId = null
     } = req.body;
 
-    console.log('Creating checkout session:', { amount, donationType, description, productId });
+    console.log('Creating checkout session:', { amount, donationType, description, productId, priceId });
 
-    // Validate amount
-    if (!amount || amount <= 0) {
-      return res.status(400).json({ error: 'Invalid amount' });
-    }
+    // Define product and price mappings using environment variables
+    const PRODUCT_MAPPINGS = {
+      // Recurring subscription products with fixed prices
+      'explorer': {
+        productId: process.env.STRIPE_PRODUCT_EXPLORER,
+        priceId: process.env.STRIPE_PRICE_EXPLORER_MONTHLY,
+        amount: 200
+      },
+      'steamer': {
+        productId: process.env.STRIPE_PRODUCT_STEAMER, 
+        priceId: process.env.STRIPE_PRICE_STEAMER_MONTHLY,
+        amount: 600
+      },
+      'ygber': {
+        productId: process.env.STRIPE_PRODUCT_YGBER,
+        priceId: process.env.STRIPE_PRICE_YGBER_MONTHLY, 
+        amount: 1000
+      },
+      // Variable amount one-time product
+      'one-time': {
+        productId: process.env.STRIPE_PRODUCT_ONE_TIME,
+        priceId: process.env.STRIPE_PRICE_ONE_TIME_VARIABLE
+      }
+    };
 
     const sessionConfig = {
       payment_method_types: ['card'],
@@ -46,35 +67,84 @@ export default async function handler(req, res) {
       }
     };
 
-    if (donationType === 'monthly') {
-      // Create subscription
-      sessionConfig.mode = 'subscription';
+    // Use existing price ID if provided
+    if (priceId) {
+      sessionConfig.mode = donationType === 'monthly' ? 'subscription' : 'payment';
       sessionConfig.line_items = [{
-        price_data: {
-          currency: currency,
-          product_data: { 
-            name: 'Monthly YGBverse Donation',
-            description: 'Monthly donation to support STEM education through YGBverse'
-          },
-          unit_amount: parseInt(amount) * 100,
-          recurring: { interval: 'month' },
-        },
+        price: priceId,
         quantity: 1,
       }];
-    } else {
-      // Create one-time payment
+    }
+    // Use product mapping if productId matches predefined products
+    else if (productId && PRODUCT_MAPPINGS[productId]) {
+      const mapping = PRODUCT_MAPPINGS[productId];
+      if (mapping.priceId && (donationType === 'monthly' || productId !== 'one-time')) {
+        // Use existing price for recurring or predefined amounts
+        sessionConfig.mode = donationType === 'monthly' ? 'subscription' : 'payment';
+        sessionConfig.line_items = [{
+          price: mapping.priceId,
+          quantity: 1,
+        }];
+      } else {
+        // Use variable pricing for one-time donations
+        sessionConfig.mode = 'payment';
+        sessionConfig.line_items = [{
+          price_data: {
+            currency: currency,
+            product: mapping.productId,
+            unit_amount: parseInt(amount) * 100,
+          },
+          quantity: 1,
+        }];
+      }
+    }
+    // For one-time donations without specific product, use the variable price product
+    else if (donationType === 'one-time') {
+      // Validate amount for one-time donations
+      if (!amount || amount <= 0) {
+        return res.status(400).json({ error: 'Invalid amount for one-time donation' });
+      }
+      
       sessionConfig.mode = 'payment';
       sessionConfig.line_items = [{
         price_data: {
           currency: currency,
-          product_data: { 
-            name: 'YGBverse Donation',
-            description: `One-time donation to support STEM education through YGBverse - $${amount}`
-          },
+          product: PRODUCT_MAPPINGS['one-time'].productId,
           unit_amount: parseInt(amount) * 100,
         },
         quantity: 1,
       }];
+    }
+    // Handle specific amount-based product selection
+    else if (amount) {
+      let selectedProduct = 'one-time';
+      if (donationType === 'monthly') {
+        if (amount >= 1000) selectedProduct = 'ygber';
+        else if (amount >= 600) selectedProduct = 'steamer'; 
+        else if (amount >= 200) selectedProduct = 'explorer';
+      }
+      
+      const mapping = PRODUCT_MAPPINGS[selectedProduct];
+      if (donationType === 'monthly' && mapping.priceId) {
+        sessionConfig.mode = 'subscription';
+        sessionConfig.line_items = [{
+          price: mapping.priceId,
+          quantity: 1,
+        }];
+      } else {
+        sessionConfig.mode = 'payment';
+        sessionConfig.line_items = [{
+          price_data: {
+            currency: currency,
+            product: mapping.productId,
+            unit_amount: parseInt(amount) * 100,
+          },
+          quantity: 1,
+        }];
+      }
+    }
+    else {
+      return res.status(400).json({ error: 'Invalid product or amount specified' });
     }
     
     // Create session with Connect account to enable fees

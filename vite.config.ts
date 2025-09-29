@@ -60,6 +60,43 @@
     build: {
       target: 'esnext',
       outDir: 'build',
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            // React core - always needed
+            'react-vendor': ['react', 'react-dom'],
+            
+            // Animation libraries - used across app
+            'animation': ['motion/react'],
+            
+            // UI components - used across multiple pages
+            'ui-vendor': ['lucide-react', '@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
+            
+            // Three.js ecosystem - only for 3D content
+            'three-core': ['three'],
+            'three-fiber': ['@react-three/fiber', '@react-three/drei'],
+            
+            // Form and validation
+            'forms': ['react-hook-form'],
+            
+            // Stripe payment
+            'payments': ['@stripe/stripe-js', '@stripe/react-stripe-js'],
+            
+            // Other vendors (client-side only)
+            'vendor': ['validator']
+          }
+        }
+      },
+      // Increase chunk size warning limit for 3D assets
+      chunkSizeWarningLimit: 1000,
+      // Enable minification
+      minify: 'terser',
+      terserOptions: {
+        compress: {
+          drop_console: true,
+          drop_debugger: true,
+        },
+      },
     },
     server: {
       port: 3000,

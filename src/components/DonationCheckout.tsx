@@ -110,7 +110,7 @@ export function useStripeCheckout() {
           donationType: 'one-time',
           description: `YGBverse One-Time Donation - $${amount}`,
           currency: 'usd',
-          productId: 'prod_T4fZSmo5mQHFDc' // Always use the same product ID for all donations
+          productId: 'one-time'
         }),
       });
 

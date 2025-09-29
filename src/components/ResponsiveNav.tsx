@@ -195,9 +195,9 @@ export function ResponsiveNav({
             textColor: "#ffffff",
             onLabelClick: () => handleNavClick('about'),
             links: [
-                { label: "Our Mission", href: "#", ariaLabel: "Learn about our mission", onClick: () => handleNavClick('about') },
-                { label: "Team", href: "#", ariaLabel: "Meet the team", onClick: () => handleNavClick('about') },
-                { label: "Vision", href: "#", ariaLabel: "Our vision", onClick: () => handleNavClick('about') }
+                { label: "Our Mission", href: "#mission-section", ariaLabel: "Learn about our mission", onClick: () => handleSectionScroll('about', 'mission-section') },
+                { label: "Representation", href: "#representation-section", ariaLabel: "See representation section", onClick: () => handleSectionScroll('about', 'representation-section') },
+                { label: "Meet Our Team", href: "#team-section", ariaLabel: "Meet the team", onClick: () => handleSectionScroll('about', 'team-section') }
             ]
         }
     ];

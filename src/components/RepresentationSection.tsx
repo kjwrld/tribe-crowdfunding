@@ -49,7 +49,7 @@ export default function RepresentationSection() {
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
 
   return (
-    <section ref={sectionRef} className="w-full py-[80px] px-4 lg:px-8">
+    <section id="representation-section" ref={sectionRef} className="w-full py-[80px] px-4 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col gap-[40px] lg:gap-[60px] items-center">
           {/* Mobile: Cards on top, Desktop: Cards on left */}

@@ -4,6 +4,7 @@
   import "./index.css";
   import "./styles/font-override.css";
   import { StripeProvider } from "./components/StripeProvider.tsx";
+  import { modelPreloader } from "./services/ModelPreloader";
 
   // Nuclear option: Force Nunito font via JavaScript
   const forceNunitoFont = () => {
@@ -21,6 +22,12 @@
       (el as HTMLElement).style.fontFamily = '"Nunito", ui-sans-serif, system-ui, sans-serif';
     });
   };
+
+  // Initialize model preloading immediately
+  modelPreloader.initializePreloading();
+  
+  // Also warm up R3F chunks for faster navigation
+  modelPreloader.warmupR3F().catch(console.warn);
 
   // Run immediately and after DOM loads
   forceNunitoFont();

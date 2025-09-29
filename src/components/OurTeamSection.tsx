@@ -1,6 +1,10 @@
 import { motion, useInView } from 'motion/react';
 import { useRef, useState, useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
+import chrisImage from '../assets/chris.webp';
+import nicoleImage from '../assets/nicole.webp';
+import emiliaImage from '../assets/emilia.webp';
+import nihalImage from '../assets/nihal.webp';
 
 function OurTeamTitle({ isInView }: { isInView: boolean }) {
   const [animateTeam, setAnimateTeam] = useState(false);
@@ -44,11 +48,12 @@ interface TeamMemberProps {
   role: string;
   bio: string;
   avatar: string;
+  avatarImage?: string;
   delay: number;
   isInView: boolean;
 }
 
-function TeamMemberCard({ name, role, bio, avatar, delay, isInView }: TeamMemberProps) {
+function TeamMemberCard({ name, role, bio, avatar, avatarImage, delay, isInView }: TeamMemberProps) {
   return (
     <motion.div 
       className="flex flex-col items-center text-center p-6 bg-white/90 backdrop-blur-sm rounded-[24px] border border-white/20 shadow-lg hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group"
@@ -58,8 +63,18 @@ function TeamMemberCard({ name, role, bio, avatar, delay, isInView }: TeamMember
     >
       {/* Avatar */}
       <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-gradient-to-br from-[#8614ff] to-[#d5adff] p-1 mb-6 group-hover:scale-105 transition-transform duration-300">
-        <div className="w-full h-full rounded-full bg-white flex items-center justify-center text-[#8614ff] text-[24px] md:text-[32px] font-['Nunito:Bold',_sans-serif] font-bold">
-          {avatar}
+        <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
+          {avatarImage ? (
+            <img 
+              src={avatarImage} 
+              alt={name}
+              className="w-full h-full object-cover rounded-full"
+            />
+          ) : (
+            <div className="text-[#8614ff] text-[24px] md:text-[32px] font-['Nunito:Bold',_sans-serif] font-bold">
+              {avatar}
+            </div>
+          )}
         </div>
       </div>
       
@@ -88,6 +103,7 @@ function TeamGrid({ isInView }: { isInView: boolean }) {
       role: "Founder & CEO",
       bio: "Handles strategic vision and partnerships to make STEM education culturally relevant for all students.",
       avatar: "CC",
+      avatarImage: chrisImage,
       delay: 0.3
     },
     {
@@ -95,6 +111,7 @@ function TeamGrid({ isInView }: { isInView: boolean }) {
       role: "Lead Designer",
       bio: "Handles visual design and user experience to create engaging, inclusive educational interfaces.",
       avatar: "NV",
+      avatarImage: nicoleImage,
       delay: 0.5
     },
     {
@@ -102,6 +119,7 @@ function TeamGrid({ isInView }: { isInView: boolean }) {
       role: "Lead Content Creator",
       bio: "Handles curriculum development and storytelling that connects diverse cultures with STEM learning.",
       avatar: "EB",
+      avatarImage: emiliaImage,
       delay: 0.7
     },
     {
@@ -109,6 +127,7 @@ function TeamGrid({ isInView }: { isInView: boolean }) {
       role: "UI/UX Product Strategist",
       bio: "Handles product strategy and user research to ensure our platform meets real educational needs.",
       avatar: "NP",
+      avatarImage: nihalImage,
       delay: 0.9
     }
   ];

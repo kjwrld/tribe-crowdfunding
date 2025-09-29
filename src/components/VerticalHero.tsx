@@ -178,7 +178,7 @@ function Frame61772() {
 
 export default function VerticalHero() {
   return (
-    <div className="relative w-full min-h-screen" data-name="Vertical HERO">
+    <div id="mission-section" className="relative w-full min-h-screen" data-name="Vertical HERO">
       <div className="flex flex-col items-center justify-center relative w-full min-h-screen">
         <div className="box-border content-stretch flex flex-col gap-[20px] md:gap-[24px] lg:gap-[32px] items-center justify-center px-4 md:px-8 lg:px-16 xl:px-24 py-12 md:py-16 lg:py-20 relative w-full max-w-7xl mx-auto">
           <Frame61772 />
