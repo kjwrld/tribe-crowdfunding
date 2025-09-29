@@ -182,7 +182,6 @@ module.exports = async function handler(req, res) {
       details: 'Failed to create checkout session',
       code: error.code || 'UNKNOWN_ERROR'
     });
-  }
   } catch (outerError) {
     console.error('Outer catch - critical error:', outerError);
     console.error('Outer error stack:', outerError.stack);
