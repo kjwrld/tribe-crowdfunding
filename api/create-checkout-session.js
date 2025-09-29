@@ -2,22 +2,35 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const CONNECT_ACCOUNT_ID = process.env.STRIPE_CONNECT_ACCOUNT_ID;
 
-export default async function handler(req, res) {
-  // Enable CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
+module.exports = async function handler(req, res) {
   try {
+    // Enable CORS
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+    if (req.method === 'OPTIONS') {
+      return res.status(200).end();
+    }
+
+    if (req.method !== 'POST') {
+      return res.status(405).json({ error: 'Method not allowed' });
+    }
+
+    // Debug environment variables
+    console.log('Environment check:', {
+      hasStripeKey: !!process.env.STRIPE_SECRET_KEY,
+      hasConnectAccount: !!CONNECT_ACCOUNT_ID,
+      hasProductOneTime: !!process.env.STRIPE_PRODUCT_ONE_TIME
+    });
+
+    if (!process.env.STRIPE_SECRET_KEY) {
+      console.error('Missing STRIPE_SECRET_KEY');
+      return res.status(500).json({ error: 'Stripe not configured - missing secret key' });
+    }
+
     if (!CONNECT_ACCOUNT_ID) {
+      console.error('Missing STRIPE_CONNECT_ACCOUNT_ID');
       return res.status(500).json({ error: 'Stripe Connect account not configured' });
     }
 
@@ -163,9 +176,19 @@ export default async function handler(req, res) {
     
   } catch (error) {
     console.error('Error creating checkout session:', error);
+    console.error('Error stack:', error.stack);
     res.status(500).json({ 
       error: error.message,
-      details: 'Failed to create checkout session'
+      details: 'Failed to create checkout session',
+      code: error.code || 'UNKNOWN_ERROR'
+    });
+  }
+  } catch (outerError) {
+    console.error('Outer catch - critical error:', outerError);
+    console.error('Outer error stack:', outerError.stack);
+    return res.status(500).json({
+      error: 'Critical server error',
+      message: outerError.message
     });
   }
 }
