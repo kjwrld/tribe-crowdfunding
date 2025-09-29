@@ -165,7 +165,7 @@ function FormHeroBanner({ onConfetti }: { onConfetti?: (position: { x: number; y
       onConfetti?.(buttonCenter);
       
       // Call backend API to create Stripe checkout session
-      const response = await fetch('http://localhost:3002/api/create-checkout-session', {
+      const response = await fetch('/api/create-checkout-session', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
