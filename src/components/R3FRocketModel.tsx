@@ -2,12 +2,111 @@ import { Suspense, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useGLTF, Environment, Float } from "@react-three/drei";
 import * as THREE from "three";
-import { useControls } from "leva";
 import { rocketSettings } from "../config/rocketSettings";
 import { useState, useEffect } from "react";
 import RocketCubeEmissions from "./RocketCubeEmissions";
 import RocketMotionStreaks from "./RocketMotionStreaks";
 import { modelPreloader } from "../services/ModelPreloader";
+
+// Constants to replace Leva controls
+const ROCKET_CONTROLS = {
+    // Position
+    positionX: 0.7,
+    positionY: -0.7,
+    positionZ: 0.4,
+    // Rotation (static)
+    rotationX: 0,
+    rotationY: 0,
+    rotationZ: 0.6,
+    // Scale
+    scaleControl: 1.6,
+    // Animation
+    animationSpeed: 0.1,
+    rotationIntensity: 0,
+    floatSpeed: 1,
+    floatIntensity: 2,
+    floatXIntensity: 0.35,
+};
+
+const CUBE_EMISSIONS_CONTROLS = {
+    enableCubeEmissions: true,
+    cubeIntensity: 0.45,
+    cubeCount: 275,
+    cubeSize: 0.08,
+    cubeSpeed: 3.5,
+    cubeColor: "#ff7c00",
+    cubeTrailLength: 0.3,
+    emissionPosX: 0.1,
+    emissionPosY: -0.1,
+    emissionPosZ: -0.16,
+    emissionRotX: -1.08,
+    emissionRotY: -2.25,
+    emissionRotZ: -0.31,
+    emissionScale: 1.0,
+    floatXScaler: 0.0,
+    floatYScaler: 0.3,
+};
+
+const MATERIAL_CONTROLS = {
+    enableMetallic: true,
+    metalness: 0.67,
+    roughness: 0.37,
+    reflectivity: 0.38,
+    materialColor: "#b1b1b1",
+    emissive: "#000000",
+    emissiveIntensity: 0,
+};
+
+const MOTION_STREAK_CONTROLS = {
+    enableMotionStreaks: true,
+    streakIntensity: 1.75,
+    streakCount: 50,
+    streakSpeed: 10,
+    streakLength: 5.5,
+    streakWidth: 0.013,
+    streakColor: "#ffffed",
+    trailDistance: 6.0,
+    streakPosX: 2.54,
+    streakPosY: -4.16,
+    streakPosZ: -0.29,
+    streakRotX: 0,
+    streakRotY: 0,
+    streakRotZ: 0.94,
+    streakSpreadY: 0.4,
+    streakSpreadZ: 0.2,
+    streakLifespan: 0.13,
+};
+
+const SCENE_CONTROLS = {
+    // Camera
+    cameraX: 0,
+    cameraY: 0,
+    cameraZ: 5,
+    fov: 50,
+    // Ambient light
+    ambientIntensity: 5,
+    ambientColor: "#ffffff",
+    // Directional light
+    dirIntensity: 10,
+    dirPositionX: 7,
+    dirPositionY: 4.5,
+    dirPositionZ: 2,
+    dirColor: "#0300ff",
+    // Point light
+    pointIntensity: 5,
+    pointPositionX: 1,
+    pointPositionY: 0,
+    pointPositionZ: -0.5,
+    pointColor: "#00b2ff",
+    // Second Point light
+    point2Intensity: 2.6,
+    point2PositionX: -0.5,
+    point2PositionY: -0.5,
+    point2PositionZ: 2,
+    point2Color: "#0d00ff",
+    // Environment
+    environmentPreset: "warehouse" as const,
+};
 
 // 3D Rocket component with modular settings
 function Rocket() {
@@ -35,23 +134,21 @@ function Rocket() {
                     const model = modelPreloader.getModel('rocket');
                     setGltf(model);
                     setIsLoaded(true);
-                    console.log('✅ Rocket model loaded from cache');
                 } else {
                     // If not preloaded yet, wait for it
-                    console.log('⏳ Waiting for rocket model to preload...');
                     const model = await modelPreloader.preloadModel('/models/rocket-draco.glb', 'rocket');
                     setGltf(model);
                     setIsLoaded(true);
-                    console.log('✅ Rocket model loaded after waiting');
                 }
             } catch (error) {
-                console.error('❌ Failed to load rocket model:', error);
                 // Fallback to useGLTF if preloader fails
-                import("@react-three/drei").then(({ useGLTF }) => {
+                try {
+                    const { useGLTF } = await import("@react-three/drei");
                     const fallbackGltf = useGLTF("/models/rocket-draco.glb");
                     setGltf(fallbackGltf);
                     setIsLoaded(true);
-                });
+                } catch (fallbackError) {
+                }
             }
         };
 
@@ -82,6 +179,27 @@ function Rocket() {
     // Use modular settings as defaults, but allow Leva control override
     const settings = rocketSettings;
 
+    // Use constants instead of Leva controls
+    const {
+        // Position controls
+        positionX,
+        positionY,
+        positionZ,
+        // Rotation controls
+        rotationX,
+        rotationY,
+        rotationZ,
+        // Scale controls
+        scaleControl,
+        // Animation controls
+        animationSpeed,
+        rotationIntensity,
+        floatSpeed,
+        floatIntensity,
+        floatXIntensity,
+    } = ROCKET_CONTROLS;
+
+    /* 
     // Leva controls for fine-tuning the rocket
     const {
         // Position controls
@@ -182,7 +300,29 @@ function Rocket() {
         },
         { collapsed: true }
     );
+    */
 
+    // Use constants instead of Leva controls
+    const {
+        enableCubeEmissions,
+        cubeIntensity,
+        cubeCount,
+        cubeSize,
+        cubeSpeed,
+        cubeColor,
+        cubeTrailLength,
+        emissionPosX,
+        emissionPosY,
+        emissionPosZ,
+        emissionRotX,
+        emissionRotY,
+        emissionRotZ,
+        emissionScale,
+        floatXScaler,
+        floatYScaler,
+    } = CUBE_EMISSIONS_CONTROLS;
+
+    /*
     // Cube emission controls
     const {
         enableCubeEmissions,
@@ -234,7 +374,20 @@ function Rocket() {
         floatXScaler: { value: 0.0, min: 0, max: 1.5, step: 0.01 },
         floatYScaler: { value: 0.3, min: 0, max: 1.5, step: 0.01 },
     });
+    */
 
+    // Use constants instead of Leva controls
+    const {
+        enableMetallic,
+        metalness,
+        roughness,
+        reflectivity,
+        materialColor,
+        emissive,
+        emissiveIntensity,
+    } = MATERIAL_CONTROLS;
+
+    /*
     // Material controls for metallic rocket
     const {
         enableMetallic,
@@ -253,7 +406,30 @@ function Rocket() {
         emissive: { value: "#000000" },
         emissiveIntensity: { value: 0, min: 0, max: 2, step: 0.01 },
     });
+    */
 
+    // Use constants instead of Leva controls
+    const {
+        enableMotionStreaks,
+        streakIntensity,
+        streakCount,
+        streakSpeed,
+        streakLength,
+        streakWidth,
+        streakColor,
+        trailDistance,
+        streakPosX,
+        streakPosY,
+        streakPosZ,
+        streakRotX,
+        streakRotY,
+        streakRotZ,
+        streakSpreadY,
+        streakSpreadZ,
+        streakLifespan,
+    } = MOTION_STREAK_CONTROLS;
+
+    /*
     // Motion streak controls
     const {
         enableMotionStreaks,
@@ -307,6 +483,7 @@ function Rocket() {
         streakSpreadZ: { value: 0.2, min: 0.1, max: 5, step: 0.1 },
         streakLifespan: { value: 0.13, min: 0.001, max: 1, step: 0.001 },
     });
+    */
 
     // Apply metallic materials to rocket
     useEffect(() => {
@@ -556,6 +733,39 @@ export function R3FRocketModel({ className = "" }: R3FRocketModelProps) {
     // Use modular settings as defaults
     const settings = rocketSettings;
 
+    // Use constants instead of Leva controls
+    const {
+        // Camera
+        cameraX,
+        cameraY,
+        cameraZ,
+        fov,
+        // Ambient light
+        ambientIntensity,
+        ambientColor,
+        // Directional light
+        dirIntensity,
+        dirPositionX,
+        dirPositionY,
+        dirPositionZ,
+        dirColor,
+        // Point light
+        pointIntensity,
+        pointPositionX,
+        pointPositionY,
+        pointPositionZ,
+        pointColor,
+        // Second point light
+        point2Intensity,
+        point2PositionX,
+        point2PositionY,
+        point2PositionZ,
+        point2Color,
+        // Environment
+        environmentPreset,
+    } = SCENE_CONTROLS;
+
+    /*
     // Camera and lighting controls
     const {
         // Camera
@@ -714,6 +924,7 @@ export function R3FRocketModel({ className = "" }: R3FRocketModelProps) {
         },
         { collapsed: true }
     );
+    */
 
     // Monitor loading state
     useEffect(() => {
