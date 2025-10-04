@@ -24,22 +24,25 @@ class ModelPreloader {
   }
 
   private setupLoaders() {
-    // Setup DRACO loader
+    // Setup DRACO loader with correct path
     this.dracoLoader = new DRACOLoader(this.loadingManager);
-    this.dracoLoader.setDecoderPath('/draco/');
+    this.dracoLoader.setDecoderPath('/draco/gltf/');
     
     // Setup GLTF loader with DRACO support
     this.gltfLoader = new GLTFLoader(this.loadingManager);
     this.gltfLoader.setDRACOLoader(this.dracoLoader);
 
-    // Loading manager callbacks for debugging
+    // Loading manager callbacks
     this.loadingManager.onLoad = () => {
+      // Models loaded successfully
     };
 
     this.loadingManager.onProgress = (url, loaded, total) => {
+      // Loading progress tracking
     };
 
     this.loadingManager.onError = (url) => {
+      console.error('ModelPreloader: Failed to load:', url);
     };
   }
 
@@ -47,12 +50,16 @@ class ModelPreloader {
    * Start preloading models immediately when app boots
    */
   public initializePreloading(): void {
-    if (this.isInitialized) return;
+    if (this.isInitialized) {
+      return;
+    }
     
     this.isInitialized = true;
 
     // Preload the rocket model
-    this.preloadModel('/models/rocket-draco.glb', 'rocket');
+    const modelPath = '/models/rocket-draco.glb';
+    this.preloadModel(modelPath, 'rocket')
+      .catch(error => console.error('ModelPreloader: Failed to preload rocket model:', error));
     
     // Preload any other 3D assets here
     // this.preloadModel('/models/other-model.glb', 'other');
@@ -94,8 +101,7 @@ class ModelPreloader {
           resolve(modelData);
         },
         (progress) => {
-          // Optional: emit progress events
-          const percentage = Math.round((progress.loaded / progress.total) * 100);
+          // Loading progress tracking
         },
         (error) => {
           this.loadingPromises.delete(key);
@@ -146,13 +152,23 @@ class ModelPreloader {
   public async warmupR3F(): Promise<void> {
     try {
       // Dynamically import R3F components to trigger chunk loading
+      const imports = [
+        // Core R3F
+        import('@react-three/fiber'),
+        // R3F Drei components used in rocket scene
+        import('@react-three/drei'),
+        // Core Three.js (if not already loaded)
+        import('three')
+      ];
       
-      // This will load the three-fiber chunk
-      await import('@react-three/fiber');
+      // Load all chunks in parallel
+      await Promise.all(imports);
       
     } catch (error) {
+      console.error('ModelPreloader: R3F warmup failed:', error);
     }
   }
+
 
   /**
    * Clean up resources

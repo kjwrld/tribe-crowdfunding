@@ -38,7 +38,7 @@ export const StarBorder: React.FC<StarBorderProps> = ({
           inset: '-2px',
           borderRadius: '12px',
           padding: '2px',
-          background: `linear-gradient(45deg, ${color}, transparent, ${color})`,
+          backgroundImage: `linear-gradient(45deg, ${color}, transparent, ${color})`,
           backgroundSize: '200% 200%',
           animation: `starBorderGlow ${speed} ease-in-out infinite`,
           mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',

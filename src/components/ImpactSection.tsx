@@ -223,7 +223,7 @@ function PricingTier({
                         <span
                             className={`font-['Nunito:Regular',_sans-serif] font-normal text-[#374151] text-[14px] leading-relaxed ${
                                 tier === "ygber" &&
-                                feature.includes("120 students")
+                                feature.includes("150 students")
                                     ? "shimmer-text"
                                     : ""
                             }`}
@@ -331,10 +331,10 @@ export function ImpactSection({
         {
             tier: "explorer" as const,
             title: "Explorer",
-            price: "$200",
+            price: "$199",
             icon: <Rocket className="w-8 h-8 text-[#8614ff]" />,
             features: [
-                "Gift access to 1 classes (30 students)",
+                "Gift access to 1 class (30 students)",
                 "Meet the Founder and the Team",
                 'Digital "Thank you" postcard',
             ],
@@ -342,7 +342,7 @@ export function ImpactSection({
         {
             tier: "steamer" as const,
             title: "Steamer",
-            price: "$600",
+            price: "$599",
             icon: <Train className="w-8 h-8 text-[#6d00e0]" />,
             isPopular: true,
             features: [
@@ -355,7 +355,7 @@ export function ImpactSection({
         {
             tier: "ygber" as const,
             title: "YGBer",
-            price: "$1000",
+            price: "$999",
             icon: <Crown className="w-8 h-8 text-[#5400ad]" />,
             features: [
                 "Gift access to 5 classes (120 students)",

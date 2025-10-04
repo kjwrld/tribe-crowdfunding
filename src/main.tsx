@@ -23,6 +23,17 @@
     });
   };
 
+  // Suppress Stripe HTTPS warnings in development
+  if (import.meta.env.MODE === 'development') {
+    const originalWarn = console.warn;
+    console.warn = (...args) => {
+      if (args[0] && typeof args[0] === 'string' && args[0].includes('Stripe.js integration over HTTP')) {
+        return; // Suppress Stripe HTTP warnings in dev
+      }
+      originalWarn.apply(console, args);
+    };
+  }
+
   // Initialize model preloading immediately
   modelPreloader.initializePreloading();
   

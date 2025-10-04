@@ -141,6 +141,7 @@ function Rocket() {
                     setIsLoaded(true);
                 }
             } catch (error) {
+                console.error('Rocket Component: Preloader failed, using fallback:', error);
                 // Fallback to useGLTF if preloader fails
                 try {
                     const { useGLTF } = await import("@react-three/drei");
@@ -148,6 +149,7 @@ function Rocket() {
                     setGltf(fallbackGltf);
                     setIsLoaded(true);
                 } catch (fallbackError) {
+                    console.error('Rocket Component: Fallback also failed:', fallbackError);
                 }
             }
         };

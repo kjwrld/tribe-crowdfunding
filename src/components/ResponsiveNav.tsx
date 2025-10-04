@@ -91,7 +91,6 @@ export function ResponsiveNav({
     };
 
     const handleNavClick = (page: "home" | "about" | "explore" | "crowdfunding") => {
-        console.log('Nav item clicked:', page);
         if (onNavigate) {
             onNavigate(page);
         }

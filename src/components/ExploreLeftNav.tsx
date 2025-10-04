@@ -60,7 +60,6 @@ export function ExploreLeftNav({ sections }: ExploreLeftNavProps) {
             });
 
             if (currentSection && currentSection !== activeSection) {
-                console.log("Setting active section to:", currentSection);
                 setActiveSection(currentSection);
             }
         };

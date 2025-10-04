@@ -491,7 +491,7 @@ export function Explore({ onNavigate, onConfetti }: ExploreProps = {}) {
             />
             
             {/* Add styles for the animations */}
-            <style jsx>{`
+            <style>{`
                 @keyframes twinkle-large {
                     0%, 100% { 
                         opacity: 0.3; 

@@ -126,9 +126,9 @@ function Frame61559() {
 
 export default function HeroBanner() {
   return (
-    <div className="content-stretch flex isolate items-start relative size-full" data-name="Hero Banner">
-      <Frame61859 />
+    <div className="content-stretch flex flex-col isolate items-start relative size-full" data-name="Hero Banner">
       <Frame61559 />
+      <Frame61859 />
     </div>
   );
 }

@@ -231,7 +231,7 @@ export function ExploreHero({ onNavigate, onConfetti }: ExploreHeroProps) {
         />
       </div>
       
-      <style jsx>{`
+      <style>{`
         @keyframes holo-pulse {
           0%, 100% { opacity: 0.02; transform: scale(1); }
           50% { opacity: 0.05; transform: scale(1.1); }
