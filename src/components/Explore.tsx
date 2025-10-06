@@ -822,7 +822,7 @@ export function Explore({ onNavigate, onConfetti }: ExploreProps = {}) {
                 {/* Footer Section */}
                 <section id="footer-section" className="w-full relative">
                     <div className="w-full">
-                        <GlassmorphicFooter onNavigate={onNavigate} />
+                        <GlassmorphicFooter onNavigate={onNavigate} currentPage="explore" />
                     </div>
                 </section>
             </div>

@@ -20,7 +20,7 @@ import { Button } from "./components/ui/button";
 import { Input } from "./components/ui/input";
 import { Label } from "./components/ui/label";
 import { Status, StatusIndicator, StatusLabel } from "./components/ui/status";
-import { ArrowRight, Mail } from "lucide-react";
+import { ArrowRight, Mail, BookCheck } from "lucide-react";
 import { DonationDialog } from "./components/DonationDialog";
 import { ResponsiveNav } from "./components/ResponsiveNav";
 import { GlassmorphicFooter } from "./components/GlassmorphicFooter";
@@ -1366,63 +1366,6 @@ function CommunityIcon() {
     );
 }
 
-function SportsIcon() {
-    return (
-        <div className="box-border content-stretch flex flex-col gap-[6.38px] h-[43.979px] items-center justify-center overflow-clip p-[3.19px] relative shrink-0 w-[42.107px]">
-            <div className="relative shrink-0 size-[45.935px]">
-                <svg
-                    className="block size-full"
-                    fill="none"
-                    preserveAspectRatio="none"
-                    viewBox="0 0 46 46"
-                >
-                    <g>
-                        {/* Basketball body */}
-                        <circle
-                            cx="23"
-                            cy="23"
-                            r="18"
-                            fill="#3C007A"
-                            strokeWidth="1"
-                        />
-                        {/* Horizontal center line */}
-                        <line
-                            x1="5"
-                            y1="23"
-                            x2="41"
-                            y2="23"
-                            stroke="white"
-                            strokeWidth="1.5"
-                        />
-                        {/* Vertical center line */}
-                        <line
-                            x1="23"
-                            y1="5"
-                            x2="23"
-                            y2="41"
-                            stroke="white"
-                            strokeWidth="1.5"
-                        />
-                        {/* Left curved line */}
-                        <path
-                            d="M 8 12 Q 16 23 8 34"
-                            fill="none"
-                            stroke="white"
-                            strokeWidth="1.5"
-                        />
-                        {/* Right curved line */}
-                        <path
-                            d="M 38 12 Q 30 23 38 34"
-                            fill="none"
-                            stroke="white"
-                            strokeWidth="1.5"
-                        />
-                    </g>
-                </svg>
-            </div>
-        </div>
-    );
-}
 
 function FeatureCard({
     icon,
@@ -1566,8 +1509,14 @@ function SolutionFeatureGrid({ isInView }: { isInView: boolean }) {
             </div>
             <div className="w-full h-[180px]">
                 <FeatureCard
-                    icon={<SportsIcon />}
-                    title="Music + Sports Connections"
+                    icon={
+                        <div className="box-border content-stretch flex flex-col gap-[6.38px] h-[43.979px] items-center justify-center overflow-clip p-[3.19px] relative shrink-0 w-[42.107px]">
+                            <div className="relative shrink-0 size-[45.935px] flex items-center justify-center">
+                                <BookCheck className="w-12 h-12" style={{ color: '#3C007A' }} />
+                            </div>
+                        </div>
+                    }
+                    title="Proficiency in 1-3 Months"
                     delay={0.9}
                     isInView={isInView}
                     cardIndex={3}
@@ -2595,7 +2544,10 @@ export default function App() {
                 />
 
                 {/* Glassmorphic Footer */}
-                <GlassmorphicFooter onNavigate={handleNavigate} />
+                <GlassmorphicFooter
+                    onNavigate={handleNavigate}
+                    currentPage={currentPage}
+                />
 
                 {/* Confetti Canvas Overlay */}
                 <ConfettiCanvas
@@ -2658,7 +2610,10 @@ export default function App() {
             </div>
 
             {/* Glassmorphic Footer */}
-            <GlassmorphicFooter onNavigate={handleNavigate} />
+            <GlassmorphicFooter
+                onNavigate={handleNavigate}
+                currentPage={currentPage}
+            />
 
             {/* Confetti Canvas Overlay */}
             <ConfettiCanvas

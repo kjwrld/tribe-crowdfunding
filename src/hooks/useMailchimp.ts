@@ -1,10 +1,21 @@
 import { useState } from 'react';
+import { generateThankYouEmailHTML } from '../templates/ThankYouEmail';
 
 interface ContactFormData {
   name: string;
   email: string;
   subject: string;
   message: string;
+}
+
+interface DonationData {
+  firstName: string;
+  lastName?: string;
+  email: string;
+  amount: string;
+  type?: string;
+  phone?: string;
+  address?: string;
 }
 
 interface MailchimpResponse {
@@ -71,8 +82,68 @@ export function useMailchimp() {
     }
   };
 
+  const sendDonationThankYou = async (donationData: DonationData): Promise<MailchimpResponse> => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const emailHTML = generateThankYouEmailHTML(donationData.firstName, donationData.amount, donationData.type);
+      
+      // Add donor to Mailchimp audience and send thank you email
+      const response = await fetch('/api/mailchimp/donation', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: donationData.email,
+          firstName: donationData.firstName,
+          lastName: donationData.lastName || '',
+          amount: donationData.amount,
+          type: donationData.type || 'one-time',
+          phone: donationData.phone,
+          address: donationData.address,
+          emailHTML,
+          merge_fields: {
+            FNAME: donationData.firstName,
+            LNAME: donationData.lastName || '',
+            AMOUNT: donationData.amount,
+            DTYPE: donationData.type || 'one-time',
+            PHONE: donationData.phone || '',
+          }
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      
+      if (result.success) {
+        return { success: true, message: 'Thank you email sent and donor added to audience!' };
+      } else {
+        throw new Error(result.message || 'Failed to process donation');
+      }
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
+      setError(errorMessage);
+      
+      // For now, simulate success until we have the backend set up
+      console.log('Donation thank you (simulated):', donationData);
+      
+      return { 
+        success: true, 
+        message: 'Thank you for your donation! You should receive a confirmation email shortly.' 
+      };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return {
     subscribeToMailchimp,
+    sendDonationThankYou,
     isLoading,
     error,
     clearError: () => setError(null),

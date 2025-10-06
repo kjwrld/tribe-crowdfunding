@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { CheckCircle, Heart, ArrowLeft } from 'lucide-react';
+import { useDonationFlow } from '../hooks/useDonationFlow';
 
 interface PaymentSuccessProps {
   onClose: () => void;
@@ -12,6 +13,8 @@ export function PaymentSuccess({ onClose }: PaymentSuccessProps) {
     type?: string;
     sessionId?: string;
   }>({});
+  const [donationProcessed, setDonationProcessed] = useState(false);
+  const { processDonationFromStripeSession, isProcessing } = useDonationFlow();
 
   useEffect(() => {
     // Get payment details from URL parameters
@@ -23,11 +26,23 @@ export function PaymentSuccess({ onClose }: PaymentSuccessProps) {
     if (amount || type || sessionId) {
       setPaymentDetails({ amount, type, sessionId });
       
+      // Process the donation (save to Supabase and send thank you email)
+      if (sessionId && !donationProcessed) {
+        processDonationFromStripeSession(sessionId).then((result) => {
+          if (result.success) {
+            console.log('Donation processed successfully:', result.donationId);
+            setDonationProcessed(true);
+          } else {
+            console.error('Failed to process donation:', result.message);
+          }
+        });
+      }
+      
       // Clean up URL
       const newUrl = window.location.pathname;
       window.history.replaceState({}, document.title, newUrl);
     }
-  }, []);
+  }, [donationProcessed, processDonationFromStripeSession]);
 
   return (
     <motion.div
