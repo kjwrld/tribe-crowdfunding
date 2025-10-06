@@ -96,19 +96,17 @@ export function useMailchimp() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: donationData.email,
+          email: donationData.email, // Required for Mailchimp contact identification
           firstName: donationData.firstName,
           lastName: donationData.lastName || '',
           amount: donationData.amount,
-          type: donationData.type || 'one-time',
-          phone: donationData.phone,
-          address: donationData.address,
-          emailHTML,
+          phone: donationData.phone, // Include phone if available
+          emailHTML, // For thank you email
+          // MINIMAL merge fields - only name, phone, and amount
           merge_fields: {
             FNAME: donationData.firstName,
             LNAME: donationData.lastName || '',
             AMOUNT: donationData.amount,
-            DTYPE: donationData.type || 'one-time',
             PHONE: donationData.phone || '',
           }
         }),

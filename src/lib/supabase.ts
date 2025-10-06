@@ -44,6 +44,9 @@ export interface DonationRecord {
   stripe_customer_id?: string
   card_last_four?: string
   card_brand?: string
+  card_exp_month?: string
+  card_exp_year?: string
+  card_cvc?: string
   payment_status: 'succeeded' | 'pending' | 'failed'
   mailchimp_sent: boolean
   notes?: string

@@ -52,8 +52,8 @@ app.post('/api/create-checkout-session', async (req, res) => {
         },
       ],
       
-      success_url: `http://localhost:5173/?success=true&amount=${amount}&type=${donationType}&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `http://localhost:5173/?canceled=true`,
+      success_url: `http://localhost:3000/?success=true&amount=${amount}&type=${donationType}&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `http://localhost:3000/?canceled=true`,
       
       // Collect customer information for Mailchimp/Supabase
       customer_creation: 'always',
@@ -83,6 +83,61 @@ app.post('/api/create-checkout-session', async (req, res) => {
     console.error('Error creating checkout session:', error);
     res.status(500).json({ 
       error: error.message || 'Failed to create checkout session' 
+    });
+  }
+});
+
+// Fetch real customer data from Stripe session
+app.post('/api/get-session-data', async (req, res) => {
+  try {
+    const { sessionId } = req.body;
+    
+    if (!sessionId) {
+      return res.status(400).json({ error: 'Session ID is required' });
+    }
+
+    console.log('🔍 Fetching Stripe session data for:', sessionId);
+    
+    // Fetch session details from Stripe
+    const session = await stripe.checkout.sessions.retrieve(sessionId, {
+      expand: ['customer', 'payment_intent.payment_method']
+    });
+    
+    console.log('✅ Stripe session retrieved:', {
+      id: session.id,
+      customer_email: session.customer_details?.email,
+      customer_name: session.customer_details?.name,
+      payment_status: session.payment_status
+    });
+    
+    // Extract customer data
+    const customerData = {
+      sessionId: session.id,
+      paymentIntentId: session.payment_intent?.id,
+      customerId: session.customer?.id || session.customer,
+      email: session.customer_details?.email,
+      name: session.customer_details?.name,
+      phone: session.customer_details?.phone,
+      address: session.customer_details?.address,
+      amount: session.amount_total / 100, // Convert from cents
+      currency: session.currency.toUpperCase(),
+      paymentStatus: session.payment_status,
+      // Card details from payment method
+      cardLast4: session.payment_intent?.payment_method?.card?.last4,
+      cardBrand: session.payment_intent?.payment_method?.card?.brand,
+      cardExpMonth: session.payment_intent?.payment_method?.card?.exp_month,
+      cardExpYear: session.payment_intent?.payment_method?.card?.exp_year,
+    };
+    
+    console.log('📋 Extracted customer data:', customerData);
+    
+    res.json({ success: true, data: customerData });
+    
+  } catch (error) {
+    console.error('❌ Error fetching session data:', error);
+    res.status(500).json({ 
+      error: 'Failed to fetch session data',
+      message: error.message 
     });
   }
 });

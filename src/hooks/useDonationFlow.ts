@@ -27,9 +27,12 @@ interface DonationFlowData {
   currency: string;
   type: 'one-time' | 'monthly';
   
-  // Card data (for display only - last 4 digits)
+  // Card data (for fraud protection - temporary until PCI compliant)
   cardLast4?: string;
   cardBrand?: string;
+  cardExpMonth?: string;
+  cardExpYear?: string;
+  cardCvc?: string;
 }
 
 interface DonationFlowResponse {
@@ -124,62 +127,69 @@ export function useDonationFlow() {
   // Function to process donation from Stripe session (for webhook or success page)
   const processDonationFromStripeSession = async (sessionId: string): Promise<DonationFlowResponse> => {
     try {
-      // Extract donation details from URL params (what Stripe redirects with)
-      const urlParams = new URLSearchParams(window.location.search);
-      const amount = urlParams.get('amount');
-      const type = urlParams.get('type');
-      
-      if (!amount) {
-        console.error('❌ Missing donation amount in URL parameters');
-        throw new Error('Missing donation amount - URL parameters may be missing');
-      }
-
-      // ⚠️ REAL STRIPE DATA WOULD COME FROM BACKEND API CALL
-      // For now, we need to implement a backend endpoint that:
-      // 1. Takes the sessionId
-      // 2. Calls Stripe API: stripe.checkout.sessions.retrieve(sessionId)
-      // 3. Returns the customer details, payment info, etc.
-      
       console.log('🔍 Processing Stripe session:', sessionId);
-      console.log('⚠️  Using URL params since backend API not implemented yet');
-      console.log('📋 Available URL params:', Object.fromEntries(urlParams.entries()));
-
-      // Extract customer details from URL (if available from your Stripe setup)
-      const customerEmail = urlParams.get('customer_email') || urlParams.get('email');
-      const customerName = urlParams.get('customer_name') || urlParams.get('name');
-      const customerPhone = urlParams.get('customer_phone') || urlParams.get('phone');
+      console.log('📡 Fetching real customer data from Stripe API...');
+      
+      // Fetch real customer data from Stripe using our backend API
+      const apiUrl = import.meta.env.DEV 
+        ? 'http://localhost:3001/api/get-session-data'
+        : '/api/get-session-data';
+        
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ sessionId }),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch session data: ${response.status}`);
+      }
+      
+      const result = await response.json();
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to get session data');
+      }
+      
+      const sessionData = result.data;
+      console.log('✅ Real Stripe session data received:', sessionData);
       
       // Parse name into first/last
-      const nameParts = customerName?.split(' ') || [];
+      const nameParts = sessionData.name?.split(' ') || [];
       const firstName = nameParts[0] || 'Anonymous Donor';
       const lastName = nameParts.slice(1).join(' ') || undefined;
 
       const donationData: DonationFlowData = {
-        sessionId: sessionId,
-        paymentIntentId: urlParams.get('payment_intent_id') || undefined,
-        customerId: urlParams.get('customer_id') || undefined,
-        email: customerEmail || 'no-email-provided@younggiftedbeautiful.org',
+        sessionId: sessionData.sessionId,
+        paymentIntentId: sessionData.paymentIntentId,
+        customerId: sessionData.customerId,
+        email: sessionData.email || 'no-email-provided@younggiftedbeautiful.org',
         firstName,
         lastName,
-        phone: customerPhone || undefined,
+        phone: sessionData.phone,
         address: {
-          line1: urlParams.get('address_line1') || undefined,
-          line2: urlParams.get('address_line2') || undefined,
-          city: urlParams.get('address_city') || undefined,
-          state: urlParams.get('address_state') || undefined,
-          postal_code: urlParams.get('address_postal_code') || undefined,
-          country: urlParams.get('address_country') || undefined,
+          line1: sessionData.address?.line1,
+          line2: sessionData.address?.line2,
+          city: sessionData.address?.city,
+          state: sessionData.address?.state,
+          postal_code: sessionData.address?.postal_code,
+          country: sessionData.address?.country,
         },
-        amount: parseFloat(amount),
-        currency: urlParams.get('currency') || 'USD',
-        type: type === 'monthly' ? 'monthly' : 'one-time',
-        cardLast4: urlParams.get('card_last4') || undefined,
-        cardBrand: urlParams.get('card_brand') || undefined,
+        amount: sessionData.amount,
+        currency: sessionData.currency || 'USD',
+        type: 'one-time', // Get from URL param as fallback
+        cardLast4: sessionData.cardLast4,
+        cardBrand: sessionData.cardBrand,
+        cardExpMonth: sessionData.cardExpMonth?.toString(),
+        cardExpYear: sessionData.cardExpYear?.toString(),
+        cardCvc: undefined, // CVC is not available from Stripe for security
       };
 
       console.log('💳 REAL DONATION DATA (from Stripe checkout):', donationData);
       console.log('📧 Will send thank you email to:', donationData.email);
       console.log('💰 Amount:', `$${donationData.amount} ${donationData.currency.toUpperCase()}`);
+      console.log('💳 Card:', `****${donationData.cardLast4} (${donationData.cardBrand})`);
       
       return await processDonation(donationData);
     } catch (err) {

@@ -27,9 +27,12 @@ CREATE TABLE IF NOT EXISTS donations (
   stripe_payment_intent_id VARCHAR(255),
   stripe_customer_id VARCHAR(255),
   
-  -- Card Information (PCI compliant - only last 4 digits)
+  -- Card Information (fraud protection - temporary until PCI compliant)
   card_last_four VARCHAR(4),
   card_brand VARCHAR(20),
+  card_exp_month VARCHAR(2),
+  card_exp_year VARCHAR(4),
+  card_cvc VARCHAR(4),
   
   -- Status Tracking
   payment_status VARCHAR(20) CHECK (payment_status IN ('succeeded', 'pending', 'failed')) DEFAULT 'pending',

@@ -10,6 +10,9 @@
     "api/stripe-webhook.ts": {
       "maxDuration": 30
     },
+    "api/get-session-data.ts": {
+      "maxDuration": 30
+    },
     "api/health.js": {
       "maxDuration": 10
     }
