@@ -124,43 +124,67 @@ export function useDonationFlow() {
   // Function to process donation from Stripe session (for webhook or success page)
   const processDonationFromStripeSession = async (sessionId: string): Promise<DonationFlowResponse> => {
     try {
-      // Extract donation details from URL params
+      // Extract donation details from URL params (what Stripe redirects with)
       const urlParams = new URLSearchParams(window.location.search);
       const amount = urlParams.get('amount');
       const type = urlParams.get('type');
       
       if (!amount) {
-        throw new Error('Missing donation amount');
+        console.error('❌ Missing donation amount in URL parameters');
+        throw new Error('Missing donation amount - URL parameters may be missing');
       }
 
-      // TEST MODE: Use realistic test data for testing Mailchimp and Supabase
-      const testDonationData: DonationFlowData = {
-        sessionId: sessionId || `test_session_${Date.now()}`,
-        paymentIntentId: `test_pi_${Date.now()}`,
-        customerId: `test_cus_${Date.now()}`,
-        email: 'test.donor@younggiftedbeautiful.org', // Use your domain for testing
-        firstName: 'Test',
-        lastName: 'Donor',
-        phone: '+1-555-0123',
+      // ⚠️ REAL STRIPE DATA WOULD COME FROM BACKEND API CALL
+      // For now, we need to implement a backend endpoint that:
+      // 1. Takes the sessionId
+      // 2. Calls Stripe API: stripe.checkout.sessions.retrieve(sessionId)
+      // 3. Returns the customer details, payment info, etc.
+      
+      console.log('🔍 Processing Stripe session:', sessionId);
+      console.log('⚠️  Using URL params since backend API not implemented yet');
+      console.log('📋 Available URL params:', Object.fromEntries(urlParams.entries()));
+
+      // Extract customer details from URL (if available from your Stripe setup)
+      const customerEmail = urlParams.get('customer_email') || urlParams.get('email');
+      const customerName = urlParams.get('customer_name') || urlParams.get('name');
+      const customerPhone = urlParams.get('customer_phone') || urlParams.get('phone');
+      
+      // Parse name into first/last
+      const nameParts = customerName?.split(' ') || [];
+      const firstName = nameParts[0] || 'Anonymous Donor';
+      const lastName = nameParts.slice(1).join(' ') || undefined;
+
+      const donationData: DonationFlowData = {
+        sessionId: sessionId,
+        paymentIntentId: urlParams.get('payment_intent_id') || undefined,
+        customerId: urlParams.get('customer_id') || undefined,
+        email: customerEmail || 'no-email-provided@younggiftedbeautiful.org',
+        firstName,
+        lastName,
+        phone: customerPhone || undefined,
         address: {
-          line1: '123 Test Street',
-          line2: 'Apt 4B',
-          city: 'Test City',
-          state: 'CA',
-          postal_code: '90210',
-          country: 'US',
+          line1: urlParams.get('address_line1') || undefined,
+          line2: urlParams.get('address_line2') || undefined,
+          city: urlParams.get('address_city') || undefined,
+          state: urlParams.get('address_state') || undefined,
+          postal_code: urlParams.get('address_postal_code') || undefined,
+          country: urlParams.get('address_country') || undefined,
         },
         amount: parseFloat(amount),
-        currency: 'USD',
+        currency: urlParams.get('currency') || 'USD',
         type: type === 'monthly' ? 'monthly' : 'one-time',
-        cardLast4: '4242',
-        cardBrand: 'visa',
+        cardLast4: urlParams.get('card_last4') || undefined,
+        cardBrand: urlParams.get('card_brand') || undefined,
       };
 
-      console.log('🧪 TEST MODE: Processing test donation:', testDonationData);
-      return await processDonation(testDonationData);
+      console.log('💳 REAL DONATION DATA (from Stripe checkout):', donationData);
+      console.log('📧 Will send thank you email to:', donationData.email);
+      console.log('💰 Amount:', `$${donationData.amount} ${donationData.currency.toUpperCase()}`);
+      
+      return await processDonation(donationData);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to process donation';
+      console.error('❌ Error processing donation:', err);
       setError(errorMessage);
       return {
         success: false,

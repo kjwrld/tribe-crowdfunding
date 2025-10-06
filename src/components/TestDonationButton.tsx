@@ -9,15 +9,43 @@ export function TestDonationButton() {
   const { processDonationFromStripeSession, isProcessing } = useDonationFlow();
 
   const handleTestDonation = async () => {
-    // Simulate URL parameters that would come from Stripe
+    // Simulate URL parameters that would come from real Stripe checkout
     const params = new URLSearchParams();
+    
+    // Basic donation info
     params.set('amount', testAmount);
     params.set('type', testType);
-    params.set('session_id', `test_session_${Date.now()}`);
+    params.set('session_id', `cs_test_${Date.now()}`);
+    params.set('success', 'true');
+    
+    // Simulated customer data (what you'd get from real Stripe checkout)
+    params.set('customer_email', 'donor@example.com');
+    params.set('customer_name', 'John Doe');
+    params.set('customer_phone', '+1-555-0123');
+    
+    // Address info (if collected in checkout)
+    params.set('address_line1', '123 Main Street');
+    params.set('address_city', 'San Francisco');
+    params.set('address_state', 'CA');
+    params.set('address_postal_code', '94102');
+    params.set('address_country', 'US');
+    
+    // Payment method info
+    params.set('currency', 'usd');
+    params.set('card_last4', '4242');
+    params.set('card_brand', 'visa');
+    
+    // Stripe IDs
+    params.set('payment_intent_id', `pi_test_${Date.now()}`);
+    params.set('customer_id', `cus_test_${Date.now()}`);
     
     // Update URL to simulate Stripe redirect
     const newUrl = `${window.location.pathname}?${params.toString()}`;
     window.history.pushState({}, '', newUrl);
+    
+    console.log('🧪 Simulating Stripe checkout success with real-like data');
+    console.log('📧 Test email:', 'donor@example.com');
+    console.log('💰 Test amount:', `$${testAmount}`);
     
     // Show success modal which will trigger the donation processing
     setShowSuccess(true);
