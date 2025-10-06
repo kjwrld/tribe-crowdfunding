@@ -28,6 +28,7 @@ import { Explore } from "./components/Explore";
 import { ImpactSection } from "./components/ImpactSection";
 import AboutPage from "./components/AboutPage";
 import { PaymentSuccess } from "./components/PaymentSuccess";
+import { TestDonationButton } from "./components/TestDonationButton";
 
 // Responsive Hero Title Component with Text Reveal Animation
 function Frame61858() {
@@ -2625,6 +2626,9 @@ export default function App() {
             {showPaymentSuccess && (
                 <PaymentSuccess onClose={handleClosePaymentSuccess} />
             )}
+
+            {/* Test Donation Button - Only in development */}
+            <TestDonationButton />
         </div>
     );
 }

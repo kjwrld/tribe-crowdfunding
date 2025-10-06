@@ -124,8 +124,7 @@ export function useDonationFlow() {
   // Function to process donation from Stripe session (for webhook or success page)
   const processDonationFromStripeSession = async (sessionId: string): Promise<DonationFlowResponse> => {
     try {
-      // This would typically fetch session details from Stripe
-      // For now, we'll extract from URL params or local storage
+      // Extract donation details from URL params
       const urlParams = new URLSearchParams(window.location.search);
       const amount = urlParams.get('amount');
       const type = urlParams.get('type');
@@ -134,18 +133,32 @@ export function useDonationFlow() {
         throw new Error('Missing donation amount');
       }
 
-      // You would typically fetch customer details from Stripe here
-      // For now, we'll use placeholder data
-      const donationData: DonationFlowData = {
-        sessionId,
-        email: 'donor@example.com', // This should come from Stripe session
-        firstName: 'Anonymous', // This should come from Stripe session
+      // TEST MODE: Use realistic test data for testing Mailchimp and Supabase
+      const testDonationData: DonationFlowData = {
+        sessionId: sessionId || `test_session_${Date.now()}`,
+        paymentIntentId: `test_pi_${Date.now()}`,
+        customerId: `test_cus_${Date.now()}`,
+        email: 'test.donor@younggiftedbeautiful.org', // Use your domain for testing
+        firstName: 'Test',
+        lastName: 'Donor',
+        phone: '+1-555-0123',
+        address: {
+          line1: '123 Test Street',
+          line2: 'Apt 4B',
+          city: 'Test City',
+          state: 'CA',
+          postal_code: '90210',
+          country: 'US',
+        },
         amount: parseFloat(amount),
         currency: 'USD',
         type: type === 'monthly' ? 'monthly' : 'one-time',
+        cardLast4: '4242',
+        cardBrand: 'visa',
       };
 
-      return await processDonation(donationData);
+      console.log('🧪 TEST MODE: Processing test donation:', testDonationData);
+      return await processDonation(testDonationData);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to process donation';
       setError(errorMessage);
