@@ -97,20 +97,14 @@ export function useStripeCheckout() {
       }
 
       // Create real Stripe checkout session
-      // In development, we'll simulate the flow since we don't have a local backend
-      if (import.meta.env.DEV) {
-        console.log('🧪 DEV MODE: Simulating Stripe checkout...');
-        // Simulate successful checkout for testing
-        const simulatedSessionId = `cs_test_${Date.now()}`;
-        const successUrl = `${window.location.origin}/?success=true&amount=${amount}&type=one-time&session_id=${simulatedSessionId}&customer_email=test@example.com&customer_name=Test User&customer_phone=555-0123`;
-        
-        console.log('🔄 Simulating redirect to:', successUrl);
-        window.location.href = successUrl;
-        return { success: true };
-      }
-
-      // Production: Call actual Vercel API
-      const response = await fetch('/api/create-checkout-session', {
+      // We need to call our backend API to create the session securely
+      console.log('💳 Creating REAL Stripe checkout session via API...');
+      
+      const apiUrl = import.meta.env.DEV 
+        ? 'http://localhost:3001/api/create-checkout-session'  // Local Express server
+        : '/api/create-checkout-session'; // Vercel API
+      
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
