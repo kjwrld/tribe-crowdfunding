@@ -92,7 +92,7 @@ function Frame61858() {
                             }}
                             style={{ display: "inline-block" }}
                         >
-                            Stem
+                            STEM
                         </motion.span>
                     </div>
 
@@ -176,9 +176,9 @@ function FormHeroBanner({
             onConfetti?.(buttonCenter);
 
             // Call backend API to create Stripe checkout session
-            const apiUrl = import.meta.env.DEV 
-                ? 'http://localhost:3001/api/create-checkout-session'
-                : '/api/create-checkout-session';
+            const apiUrl = import.meta.env.DEV
+                ? "http://localhost:3001/api/create-checkout-session"
+                : "/api/create-checkout-session";
             const response = await fetch(apiUrl, {
                 method: "POST",
                 headers: {
@@ -1370,7 +1370,6 @@ function CommunityIcon() {
     );
 }
 
-
 function FeatureCard({
     icon,
     title,
@@ -1516,7 +1515,10 @@ function SolutionFeatureGrid({ isInView }: { isInView: boolean }) {
                     icon={
                         <div className="box-border content-stretch flex flex-col gap-[6.38px] h-[43.979px] items-center justify-center overflow-clip p-[3.19px] relative shrink-0 w-[42.107px]">
                             <div className="relative shrink-0 size-[45.935px] flex items-center justify-center">
-                                <BookCheck className="w-12 h-12" style={{ color: '#3C007A' }} />
+                                <BookCheck
+                                    className="w-12 h-12"
+                                    style={{ color: "#3C007A" }}
+                                />
                             </div>
                         </div>
                     }

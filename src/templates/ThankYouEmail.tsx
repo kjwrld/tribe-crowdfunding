@@ -204,7 +204,7 @@ export function ThankYouEmailTemplate({ firstName, amount, type }: ThankYouEmail
           fontSize: '12px',
           margin: '0'
         }}>
-          This email was sent by YGBVerse. If you have any questions, please contact us at support@younggiftedbeautiful.org
+          This email was sent by YGBVerse. If you have any questions, please contact us at info@younggiftedbeautiful.org
         </p>
       </div>
     </div>
@@ -296,7 +296,7 @@ export function generateThankYouEmailHTML(firstName: string, amount: string, typ
     <!-- Footer -->
     <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #e5e7eb; text-align: center;">
       <p style="font-family: 'Nunito', Arial, sans-serif; color: #9ca3af; font-size: 12px; margin: 0;">
-        This email was sent by YGBVerse. If you have any questions, please contact us at support@younggiftedbeautiful.org
+        This email was sent by YGBVerse. If you have any questions, please contact us at info@younggiftedbeautiful.org
       </p>
     </div>
 

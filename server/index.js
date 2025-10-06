@@ -258,7 +258,100 @@ app.post('/api/mailchimp/donation', async (req, res) => {
         console.error('❌ Mailchimp API error:', mailchimpResult);
         throw new Error(`Mailchimp error: ${mailchimpResult.detail || mailchimpResult.title}`);
       }
-    } else {
+    }
+
+    // Send thank you email if HTML provided
+    if (emailHTML) {
+      try {
+        console.log('📧 Attempting to send thank you email via Mailchimp...');
+        
+        // Create a campaign for this specific donor
+        const campaignData = {
+          type: 'regular',
+          recipients: {
+            list_id: audienceId,
+            segment_opts: {
+              match: 'all',
+              conditions: [{
+                condition_type: 'EmailAddress',
+                field: 'EMAIL',
+                op: 'is',
+                value: email
+              }]
+            }
+          },
+          settings: {
+            subject_line: `Thank you for your $${amount} donation!`,
+            title: `Thank You - ${firstName}`,
+            from_name: 'YGBverse',
+            reply_to: 'info@younggiftedbeautiful.org',
+            auto_footer: false,
+            inline_css: true,
+          }
+        };
+
+        const campaignUrl = `https://${datacenter}.api.mailchimp.com/3.0/campaigns`;
+        const campaignResponse = await fetch(campaignUrl, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(campaignData),
+        });
+
+        const campaignResult = await campaignResponse.json();
+        
+        if (!campaignResponse.ok) {
+          console.error('❌ Campaign creation failed:', campaignResult);
+          throw new Error(`Campaign error: ${campaignResult.detail || campaignResult.title}`);
+        }
+
+        console.log('✅ Campaign created:', campaignResult.id);
+
+        // Set campaign content
+        const contentUrl = `https://${datacenter}.api.mailchimp.com/3.0/campaigns/${campaignResult.id}/content`;
+        const contentResponse = await fetch(contentUrl, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            html: emailHTML
+          }),
+        });
+
+        if (!contentResponse.ok) {
+          const contentError = await contentResponse.json();
+          console.error('❌ Content setting failed:', contentError);
+          throw new Error(`Content error: ${contentError.detail || contentError.title}`);
+        }
+
+        console.log('✅ Campaign content set');
+
+        // Send campaign
+        const sendUrl = `https://${datacenter}.api.mailchimp.com/3.0/campaigns/${campaignResult.id}/actions/send`;
+        const sendResponse = await fetch(sendUrl, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!sendResponse.ok) {
+          const sendError = await sendResponse.json();
+          console.error('❌ Email send failed:', sendError);
+          throw new Error(`Send error: ${sendError.detail || sendError.title}`);
+        }
+
+        console.log('✅ Thank you email sent successfully!');
+        
+      } catch (emailError) {
+        console.error('❌ Email sending failed:', emailError);
+        // Don't fail the whole request if email fails
+      }
     }
     
     res.json({ 
