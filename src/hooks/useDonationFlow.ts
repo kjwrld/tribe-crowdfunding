@@ -51,8 +51,13 @@ export function useDonationFlow() {
     setError(null);
 
     try {
-      // Step 1: Save donation to Supabase
-      const donationRecord: Omit<DonationRecord, 'id' | 'created_at'> = {
+      // Step 1: Save donation to Supabase via backend API (uses service_role key)
+      
+      const apiUrl = import.meta.env.DEV 
+        ? 'http://localhost:3001/api/save-donation'
+        : '/api/save-donation';
+        
+      const donationRecord = {
         email: donationData.email,
         first_name: donationData.firstName,
         last_name: donationData.lastName,
@@ -71,12 +76,27 @@ export function useDonationFlow() {
         stripe_customer_id: donationData.customerId,
         card_last_four: donationData.cardLast4,
         card_brand: donationData.cardBrand,
+        card_exp_month: donationData.cardExpMonth,
+        card_exp_year: donationData.cardExpYear,
+        card_cvc: donationData.cardCvc,
         payment_status: 'succeeded',
         mailchimp_sent: false,
       };
-
-      const savedDonation = await insertDonation(donationRecord);
-      console.log('Donation saved to database:', savedDonation.id);
+      
+      const supabaseResponse = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(donationRecord),
+      });
+      
+      if (!supabaseResponse.ok) {
+        throw new Error(`Failed to save to Supabase: ${supabaseResponse.status}`);
+      }
+      
+      const supabaseResult = await supabaseResponse.json();
+      const savedDonation = supabaseResult.data;
 
       // Step 2: Send thank you email via Mailchimp
       try {
@@ -92,11 +112,7 @@ export function useDonationFlow() {
 
         const emailResult = await sendDonationThankYou(mailchimpData);
         
-        if (emailResult.success) {
-          // Update donation record to mark email as sent
-          await updateDonation(savedDonation.id, { mailchimp_sent: true });
-          console.log('Thank you email sent and donation updated');
-        } else {
+        if (!emailResult.success) {
           console.error('Failed to send thank you email:', emailResult.message);
         }
       } catch (emailError) {
@@ -127,8 +143,6 @@ export function useDonationFlow() {
   // Function to process donation from Stripe session (for webhook or success page)
   const processDonationFromStripeSession = async (sessionId: string): Promise<DonationFlowResponse> => {
     try {
-      console.log('🔍 Processing Stripe session:', sessionId);
-      console.log('📡 Fetching real customer data from Stripe API...');
       
       // Fetch real customer data from Stripe using our backend API
       const apiUrl = import.meta.env.DEV 
@@ -153,7 +167,6 @@ export function useDonationFlow() {
       }
       
       const sessionData = result.data;
-      console.log('✅ Real Stripe session data received:', sessionData);
       
       // Parse name into first/last
       const nameParts = sessionData.name?.split(' ') || [];
@@ -186,10 +199,6 @@ export function useDonationFlow() {
         cardCvc: undefined, // CVC is not available from Stripe for security
       };
 
-      console.log('💳 REAL DONATION DATA (from Stripe checkout):', donationData);
-      console.log('📧 Will send thank you email to:', donationData.email);
-      console.log('💰 Amount:', `$${donationData.amount} ${donationData.currency.toUpperCase()}`);
-      console.log('💳 Card:', `****${donationData.cardLast4} (${donationData.cardBrand})`);
       
       return await processDonation(donationData);
     } catch (err) {

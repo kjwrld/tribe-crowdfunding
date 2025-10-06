@@ -13,6 +13,9 @@
     "api/get-session-data.ts": {
       "maxDuration": 30
     },
+    "api/mailchimp/donation.ts": {
+      "maxDuration": 30
+    },
     "api/health.js": {
       "maxDuration": 10
     }

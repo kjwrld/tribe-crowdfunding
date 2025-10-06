@@ -24,7 +24,6 @@ app.post('/api/create-checkout-session', async (req, res) => {
       return res.status(400).json({ error: 'Amount is required' });
     }
 
-    console.log('Creating checkout session for:', { amount, donationType, description });
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -52,8 +51,8 @@ app.post('/api/create-checkout-session', async (req, res) => {
         },
       ],
       
-      success_url: `http://localhost:3000/?success=true&amount=${amount}&type=${donationType}&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `http://localhost:3000/?canceled=true`,
+      success_url: `${process.env.FRONTEND_URL_DEV || 'http://localhost:3000'}/?success=true&amount=${amount}&type=${donationType}&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.FRONTEND_URL_DEV || 'http://localhost:3000'}/?canceled=true`,
       
       // Collect customer information for Mailchimp/Supabase
       customer_creation: 'always',
@@ -72,7 +71,6 @@ app.post('/api/create-checkout-session', async (req, res) => {
       },
     });
 
-    console.log('✅ Checkout session created:', session.id);
     
     res.json({
       id: session.id,
@@ -96,18 +94,9 @@ app.post('/api/get-session-data', async (req, res) => {
       return res.status(400).json({ error: 'Session ID is required' });
     }
 
-    console.log('🔍 Fetching Stripe session data for:', sessionId);
-    
     // Fetch session details from Stripe
     const session = await stripe.checkout.sessions.retrieve(sessionId, {
       expand: ['customer', 'payment_intent.payment_method']
-    });
-    
-    console.log('✅ Stripe session retrieved:', {
-      id: session.id,
-      customer_email: session.customer_details?.email,
-      customer_name: session.customer_details?.name,
-      payment_status: session.payment_status
     });
     
     // Extract customer data
@@ -129,7 +118,6 @@ app.post('/api/get-session-data', async (req, res) => {
       cardExpYear: session.payment_intent?.payment_method?.card?.exp_year,
     };
     
-    console.log('📋 Extracted customer data:', customerData);
     
     res.json({ success: true, data: customerData });
     
@@ -137,6 +125,151 @@ app.post('/api/get-session-data', async (req, res) => {
     console.error('❌ Error fetching session data:', error);
     res.status(500).json({ 
       error: 'Failed to fetch session data',
+      message: error.message 
+    });
+  }
+});
+
+// Save donation to Supabase (using service_role key)
+app.post('/api/save-donation', async (req, res) => {
+  try {
+    const donationData = req.body;
+    
+    
+    const { createClient } = require('@supabase/supabase-js');
+    
+    // Use service_role key to bypass RLS
+    const supabase = createClient(
+      process.env.VITE_SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY,
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false
+        }
+      }
+    );
+    
+    const { data, error } = await supabase
+      .from('donations')
+      .insert([donationData])
+      .select()
+      .single();
+    
+    if (error) {
+      console.error('❌ Supabase error:', error);
+      throw error;
+    }
+    
+    
+    res.json({ success: true, data });
+    
+  } catch (error) {
+    console.error('❌ Error saving donation:', error);
+    res.status(500).json({ 
+      error: 'Failed to save donation',
+      message: error.message 
+    });
+  }
+});
+
+// Mailchimp donation endpoint
+app.post('/api/mailchimp/donation', async (req, res) => {
+  try {
+    const { 
+      email, 
+      firstName, 
+      lastName, 
+      amount, 
+      phone,
+      emailHTML 
+    } = req.body;
+
+    if (!email || !firstName || !amount) {
+      return res.status(400).json({ 
+        error: 'Missing required fields: email, firstName, amount' 
+      });
+    }
+
+    const apiKey = process.env.MAILCHIMP_API_KEY;
+    const audienceId = process.env.MAILCHIMP_AUDIENCE_ID;
+
+    if (!apiKey || !audienceId) {
+      console.error('❌ Missing Mailchimp credentials');
+      return res.status(500).json({ 
+        error: 'Mailchimp not configured' 
+      });
+    }
+
+    // Extract datacenter from API key (e.g., "us6" from key ending in "-us6")
+    const datacenter = apiKey.split('-')[1];
+    
+
+    // Add subscriber to Mailchimp audience
+    const mailchimpUrl = `https://${datacenter}.api.mailchimp.com/3.0/lists/${audienceId}/members`;
+    
+    const subscriberData = {
+      email_address: email,
+      status: 'subscribed',
+      merge_fields: {
+        FNAME: firstName,
+        LNAME: lastName || '',
+        AMOUNT: amount.toString(),
+        PHONE: phone || '',
+      },
+      tags: ['donor']
+    };
+
+    const mailchimpResponse = await fetch(mailchimpUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(subscriberData),
+    });
+
+    const mailchimpResult = await mailchimpResponse.json();
+
+    if (!mailchimpResponse.ok) {
+      // Check if user already exists (400 error with title "Member Exists")
+      if (mailchimpResponse.status === 400 && mailchimpResult.title === 'Member Exists') {
+        
+        // Update existing member
+        const updateUrl = `https://${datacenter}.api.mailchimp.com/3.0/lists/${audienceId}/members/${email}`;
+        const updateResponse = await fetch(updateUrl, {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            merge_fields: {
+              FNAME: firstName,
+              LNAME: lastName || '',
+              AMOUNT: amount.toString(),
+              PHONE: phone || '',
+            },
+            tags: ['donor']
+          }),
+        });
+
+      } else {
+        console.error('❌ Mailchimp API error:', mailchimpResult);
+        throw new Error(`Mailchimp error: ${mailchimpResult.detail || mailchimpResult.title}`);
+      }
+    } else {
+    }
+    
+    res.json({ 
+      success: true, 
+      message: 'Donor added to audience successfully!' 
+    });
+
+  } catch (error) {
+    console.error('❌ Mailchimp donation API error:', error);
+    res.status(500).json({ 
+      error: 'Failed to process donation with Mailchimp',
       message: error.message 
     });
   }

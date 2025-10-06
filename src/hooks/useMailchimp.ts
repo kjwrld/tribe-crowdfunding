@@ -90,7 +90,10 @@ export function useMailchimp() {
       const emailHTML = generateThankYouEmailHTML(donationData.firstName, donationData.amount, donationData.type);
       
       // Add donor to Mailchimp audience and send thank you email
-      const response = await fetch('/api/mailchimp/donation', {
+      const apiUrl = import.meta.env.DEV 
+        ? 'http://localhost:3001/api/mailchimp/donation'
+        : '/api/mailchimp/donation';
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
