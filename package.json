@@ -67,6 +67,7 @@
       },
       "devDependencies": {
             "@types/node": "^20.10.0",
+            "@vercel/node": "^5.3.24",
             "@vitejs/plugin-react-swc": "^3.10.2",
             "sharp": "^0.34.4",
             "terser": "^5.44.0",
