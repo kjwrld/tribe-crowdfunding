@@ -58,14 +58,11 @@ export default async function handler(req, res) {
                         }];
                 }
             } else {
-                // One-time payment - always use price_data
+                // One-time payment - use price_data for custom amounts
                 return [{
                     price_data: {
                         currency: currency,
-                        product_data: {
-                            name: description || `YGBverse One-Time Donation`,
-                            description: "Supporting STEM education for underrepresented students",
-                        },
+                        product: process.env.STRIPE_PRODUCT_ONE_TIME,
                         unit_amount: Math.round(amount * 100),
                     },
                     quantity: 1,
@@ -111,6 +108,8 @@ export default async function handler(req, res) {
                 donation_type: donationType,
                 amount: amount.toString(),
             },
+        }, {
+            stripeAccount: process.env.STRIPE_CONNECT_ACCOUNT_ID
         });
 
         return res.status(200).json({
