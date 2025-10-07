@@ -2209,20 +2209,70 @@ function ContactFormSection({
 
                         {/* Success Message */}
                         {successMessage && (
-                            <div className="w-full p-4 bg-green-100 border border-green-400 text-green-700 rounded-[12px] text-center">
-                                <p className="font-['Nunito:Medium',_sans-serif]">
+                            <motion.div 
+                                className="w-full p-6 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 text-green-800 rounded-[16px] text-center shadow-lg"
+                                initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                transition={{ duration: 0.3, ease: "easeOut" }}
+                            >
+                                <div className="flex items-center justify-center gap-3 mb-2">
+                                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                                        <svg 
+                                            className="w-5 h-5 text-white" 
+                                            fill="none" 
+                                            viewBox="0 0 24 24" 
+                                            stroke="currentColor"
+                                        >
+                                            <path 
+                                                strokeLinecap="round" 
+                                                strokeLinejoin="round" 
+                                                strokeWidth={2} 
+                                                d="M5 13l4 4L19 7" 
+                                            />
+                                        </svg>
+                                    </div>
+                                    <h3 className="font-['Nunito:Bold',_sans-serif] font-bold text-lg text-green-800">
+                                        Message Sent!
+                                    </h3>
+                                </div>
+                                <p className="font-['Nunito:Medium',_sans-serif] text-green-700">
                                     {successMessage}
                                 </p>
-                            </div>
+                            </motion.div>
                         )}
 
                         {/* Error Message */}
                         {error && (
-                            <div className="w-full p-4 bg-red-100 border border-red-400 text-red-700 rounded-[12px] text-center">
-                                <p className="font-['Nunito:Medium',_sans-serif]">
+                            <motion.div 
+                                className="w-full p-6 bg-gradient-to-r from-red-50 to-rose-50 border-2 border-red-300 text-red-800 rounded-[16px] text-center shadow-lg"
+                                initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                transition={{ duration: 0.3, ease: "easeOut" }}
+                            >
+                                <div className="flex items-center justify-center gap-3 mb-2">
+                                    <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
+                                        <svg 
+                                            className="w-5 h-5 text-white" 
+                                            fill="none" 
+                                            viewBox="0 0 24 24" 
+                                            stroke="currentColor"
+                                        >
+                                            <path 
+                                                strokeLinecap="round" 
+                                                strokeLinejoin="round" 
+                                                strokeWidth={2} 
+                                                d="M6 18L18 6M6 6l12 12" 
+                                            />
+                                        </svg>
+                                    </div>
+                                    <h3 className="font-['Nunito:Bold',_sans-serif] font-bold text-lg text-red-800">
+                                        Error
+                                    </h3>
+                                </div>
+                                <p className="font-['Nunito:Medium',_sans-serif] text-red-700">
                                     {error}
                                 </p>
-                            </div>
+                            </motion.div>
                         )}
 
                         {/* Trust Indicators - More responsive */}
