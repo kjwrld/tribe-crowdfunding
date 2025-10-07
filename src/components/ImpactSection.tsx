@@ -335,7 +335,6 @@ export function ImpactSection({
             icon: <Rocket className="w-8 h-8 text-[#8614ff]" />,
             features: [
                 "Gift access to 1 class (30 students)",
-                "Meet the Founder and the Team",
                 'Digital "Thank you" postcard',
             ],
         },
@@ -347,7 +346,6 @@ export function ImpactSection({
             isPopular: true,
             features: [
                 "Gift access to 3 classes (90 students)",
-                "Meet the Teacher Advisory Board",
                 "YGBverse exclusive Lanyard",
                 "Plus all Explorer benefits",
             ],
@@ -358,7 +356,7 @@ export function ImpactSection({
             price: "$999",
             icon: <Crown className="w-8 h-8 text-[#5400ad]" />,
             features: [
-                "Gift access to 5 classes (120 students)",
+                "Gift access to 5 classes (150 students)",
                 "YGB limited edition Coloring Book",
                 "YGBverse limited Edition Journal",
                 "Plus all Steamer benefits",

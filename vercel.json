@@ -4,7 +4,16 @@
   "devCommand": "npm run dev",
   "framework": "vite",
   "functions": {
-    "api/create-checkout-session.js": {
+    "api/create-checkout-session.ts": {
+      "maxDuration": 30
+    },
+    "api/stripe-webhook.ts": {
+      "maxDuration": 30
+    },
+    "api/get-session-data.ts": {
+      "maxDuration": 30
+    },
+    "api/mailchimp/donation.ts": {
       "maxDuration": 30
     },
     "api/health.js": {

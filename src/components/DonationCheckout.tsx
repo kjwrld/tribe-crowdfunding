@@ -1,148 +1,159 @@
-import { useState } from 'react';
-import { loadStripe } from '@stripe/stripe-js';
+import { useState } from "react";
+import { loadStripe } from "@stripe/stripe-js";
 
 const stripePromise = loadStripe(
-  import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_test_51XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+    import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY ||
+        "pk_test_51XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 );
 
 interface DonationCheckoutProps {
-  amount: string;
-  donationType: 'one-time';
-  onSuccess?: () => void;
-  onError?: (error: string) => void;
-  onLoading?: (loading: boolean) => void;
+    amount: string;
+    donationType: "one-time";
+    onSuccess?: () => void;
+    onError?: (error: string) => void;
+    onLoading?: (loading: boolean) => void;
 }
 
-export function DonationCheckout({ 
-  amount, 
-  donationType, 
-  onSuccess, 
-  onError, 
-  onLoading 
+export function DonationCheckout({
+    amount,
+    donationType,
+    onSuccess,
+    onError,
+    onLoading,
 }: DonationCheckoutProps) {
-  const [isProcessing, setIsProcessing] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
 
-  const handleCheckout = async () => {
-    try {
-      setIsProcessing(true);
-      onLoading?.(true);
+    const handleCheckout = async () => {
+        try {
+            setIsProcessing(true);
+            onLoading?.(true);
 
-      const stripe = await stripePromise;
-      if (!stripe) {
-        throw new Error('Stripe not loaded');
-      }
+            const stripe = await stripePromise;
+            if (!stripe) {
+                throw new Error("Stripe not loaded");
+            }
 
-      // Create checkout session
-      const response = await fetch('/api/create-checkout-session', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          amount: parseInt(amount) * 100, // Convert to cents
-          currency: 'usd',
-          mode: 'payment',
-          success_url: `${window.location.origin}/success?amount=${amount}&type=one-time`,
-          cancel_url: `${window.location.origin}/cancel`,
-        }),
-      });
+            // Create checkout session
+            const response = await fetch("/api/create-checkout-session", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    amount: parseInt(amount) * 100, // Convert to cents
+                    currency: "usd",
+                    mode: "payment",
+                    success_url: `${window.location.origin}/success?amount=${amount}&type=one-time`,
+                    cancel_url: `${window.location.origin}/cancel`,
+                }),
+            });
 
-      if (!response.ok) {
-        throw new Error('Failed to create checkout session');
-      }
+            if (!response.ok) {
+                throw new Error("Failed to create checkout session");
+            }
 
-      const session = await response.json();
+            const session = await response.json();
 
-      // Redirect to Stripe Checkout
-      const result = await stripe.redirectToCheckout({
-        sessionId: session.id,
-      });
+            // Redirect to Stripe Checkout
+            const result = await stripe.redirectToCheckout({
+                sessionId: session.id,
+            });
 
-      if (result.error) {
-        throw new Error(result.error.message);
-      }
+            if (result.error) {
+                throw new Error(result.error.message);
+            }
 
-      onSuccess?.();
-    } catch (error) {
-      console.error('Stripe checkout error:', error);
-      onError?.(error instanceof Error ? error.message : 'Payment failed');
-    } finally {
-      setIsProcessing(false);
-      onLoading?.(false);
-    }
-  };
+            onSuccess?.();
+        } catch (error) {
+            console.error("Stripe checkout error:", error);
+            onError?.(
+                error instanceof Error ? error.message : "Payment failed"
+            );
+        } finally {
+            setIsProcessing(false);
+            onLoading?.(false);
+        }
+    };
 
-  return {
-    handleCheckout,
-    isProcessing
-  };
+    return {
+        handleCheckout,
+        isProcessing,
+    };
 }
 
 // Hook for easier usage
 export function useStripeCheckout() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-  const createCheckoutSession = async (
-    amount: string,
-    donationType: 'one-time'
-  ) => {
-    try {
-      setIsLoading(true);
-      setError(null);
+    const createCheckoutSession = async (
+        amount: string,
+        donationType: "one-time"
+    ) => {
+        try {
+            setIsLoading(true);
+            setError(null);
 
-      const stripe = await stripePromise;
-      if (!stripe) {
-        throw new Error('Stripe not loaded');
-      }
+            const stripe = await stripePromise;
+            if (!stripe) {
+                throw new Error("Stripe not loaded");
+            }
 
-      // Create real Stripe checkout session
-      // Call backend API to create Stripe checkout session
-      const apiUrl = import.meta.env.DEV ? 'https://tribe-fundraiser-final.vercel.app/api/create-checkout-session' : '/api/create-checkout-session';
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          amount: parseInt(amount),
-          donationType: 'one-time',
-          description: `YGBverse One-Time Donation - $${amount}`,
-          currency: 'usd',
-          productId: 'one-time'
-        }),
-      });
+            // Create real Stripe checkout session
+            // We need to call our backend API to create the session securely
+            // console.log("💳 Creating REAL Stripe checkout session via API...");
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || `Server error: ${response.status}`);
-      }
+            const apiUrl = import.meta.env.DEV
+                ? "http://localhost:3001/api/create-checkout-session" // Local Express server
+                : "/api/create-checkout-session"; // Vercel API
 
-      const session = await response.json();
-      console.log('Checkout session created:', session);
+            const response = await fetch(apiUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    amount: parseInt(amount),
+                    donationType: "one-time",
+                    description: `YGBverse One-Time Donation - $${amount}`,
+                    currency: "usd",
+                    productId: "one-time",
+                }),
+            });
 
-      // Redirect to Stripe Checkout
-      if (session.url) {
-        window.location.href = session.url;
-      } else {
-        throw new Error('No checkout URL received from server');
-      }
-      
-      return { success: true };
-    } catch (error) {
-      // Provide user-friendly error message instead of technical details
-      const errorMessage = 'Unable to process donation at this time. Please try again later.';
-      setError(errorMessage);
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  };
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(
+                    errorData.error || `Server error: ${response.status}`
+                );
+            }
 
-  return {
-    createCheckoutSession,
-    isLoading,
-    error,
-    clearError: () => setError(null)
-  };
+            const session = await response.json();
+            // console.log('Checkout session created:', session);
+
+            // Redirect to Stripe Checkout
+            if (session.url) {
+                window.location.href = session.url;
+            } else {
+                throw new Error("No checkout URL received from server");
+            }
+
+            return { success: true };
+        } catch (error) {
+            // Provide user-friendly error message instead of technical details
+            const errorMessage =
+                "Unable to process donation at this time. Please try again later.";
+            setError(errorMessage);
+            throw error;
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return {
+        createCheckoutSession,
+        isLoading,
+        error,
+        clearError: () => setError(null),
+    };
 }
