@@ -93,49 +93,41 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             console.log("✅ Added new contact to Mailchimp audience");
         }
 
-        // Send email to info@younggiftedbeautiful.com using Resend
-        const resendApiKey = process.env.RESEND_API_KEY;
+        // Add the contact details to merge fields for easy viewing in Mailchimp
+        // You can see all contact form submissions in your Mailchimp audience with the "contact" tag
+        // The merge fields will include SUBJECT and MESSAGE for easy review
         
-        if (resendApiKey) {
-            console.log('📧 Sending contact message email...');
-            
-            const emailHtml = `
-                <h2>New Contact Form Submission</h2>
-                <p><strong>From:</strong> ${name} (${email})</p>
-                <p><strong>Subject:</strong> ${subject}</p>
-                <p><strong>Message:</strong></p>
-                <div style="background: #f5f5f5; padding: 15px; border-radius: 5px; margin: 10px 0;">
-                    ${message.replace(/\n/g, '<br>')}
-                </div>
-                <hr>
-                <p style="color: #666; font-size: 12px;">
-                    This message was sent from the contact form on younggiftedbeautiful.com
-                </p>
-            `;
-
-            const resendResponse = await fetch('https://api.resend.com/emails', {
-                method: 'POST',
+        try {
+            // Update the subscriber with additional merge fields including the message
+            const updateUrl = `https://${datacenter}.api.mailchimp.com/3.0/lists/${audienceId}/members/${email}`;
+            const updateResponse = await fetch(updateUrl, {
+                method: "PATCH",
                 headers: {
-                    'Authorization': `Bearer ${resendApiKey}`,
-                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${apiKey}`,
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    from: 'contact@younggiftedbeautiful.com',
-                    to: ['info@younggiftedbeautiful.com'],
-                    subject: `Contact Form: ${subject}`,
-                    html: emailHtml,
-                    reply_to: email,
+                    merge_fields: {
+                        FNAME: name.split(' ')[0] || name,
+                        LNAME: name.split(' ').slice(1).join(' ') || "",
+                        SUBJECT: subject,
+                        MESSAGE: message.substring(0, 500), // Mailchimp has limits on merge field length
+                    },
+                    tags: ["contact", "needs-response"],
                 }),
             });
 
-            if (resendResponse.ok) {
-                console.log("✅ Contact message sent successfully");
+            if (updateResponse.ok) {
+                console.log("✅ Contact form data saved to Mailchimp with 'needs-response' tag");
+                console.log(`📋 Contact Details: ${name} (${email}) - Subject: ${subject}`);
+                console.log(`💬 Message: ${message}`);
+                console.log("👀 Check your Mailchimp audience for contacts tagged 'needs-response'");
             } else {
-                const resendError = await resendResponse.text();
-                console.error("❌ Failed to send contact message:", resendError);
+                const errorResponse = await updateResponse.json();
+                console.error("❌ Failed to update contact in Mailchimp:", errorResponse);
             }
-        } else {
-            console.warn("⚠️ RESEND_API_KEY not configured, skipping email send");
+        } catch (updateError) {
+            console.error("❌ Error updating contact in Mailchimp:", updateError);
         }
 
         res.json({
