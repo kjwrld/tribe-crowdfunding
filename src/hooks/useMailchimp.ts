@@ -27,7 +27,7 @@ export function useMailchimp() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const subscribeToMailchimp = async (
+    const submitContactForm = async (
         formData: ContactFormData
     ): Promise<MailchimpResponse> => {
         setIsLoading(true);
@@ -62,6 +62,32 @@ export function useMailchimp() {
             } else {
                 throw new Error(result.message || "Failed to submit contact form");
             }
+        } catch (err) {
+            const errorMessage =
+                err instanceof Error
+                    ? err.message
+                    : "An unexpected error occurred";
+            setError(errorMessage);
+
+            return {
+                success: false,
+                message: errorMessage,
+            };
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const subscribeToMailchimp = async (
+        formData: ContactFormData
+    ): Promise<MailchimpResponse> => {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            // This is the old newsletter subscription logic (if needed)
+            // For now, redirect to contact form
+            return await submitContactForm(formData);
         } catch (err) {
             const errorMessage =
                 err instanceof Error
@@ -154,6 +180,7 @@ export function useMailchimp() {
 
     return {
         subscribeToMailchimp,
+        submitContactForm,
         sendDonationThankYou,
         isLoading,
         error,
