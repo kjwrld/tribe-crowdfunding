@@ -79,7 +79,7 @@ export function PaymentSuccess({ onClose }: PaymentSuccessProps) {
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ delay: 0.3 }}
                 >
-                    Thank You! 🎓
+                    Thank You!
                 </motion.h2>
 
                 <motion.p
