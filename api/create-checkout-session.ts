@@ -77,12 +77,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 },
             ],
 
-            payment_intent_data: {
-                application_fee_amount: Math.round(amount * 100 * 0.05),
-                transfer_data: {
-                    destination: process.env.STRIPE_CONNECT_ACCOUNT_ID,
+            // Stripe Connect: Only for one-time payments (not subscriptions)
+            ...(donationType === "one-time" ? {
+                payment_intent_data: {
+                    application_fee_amount: Math.round(amount * 100 * 0.05), // 5% platform fee
+                    transfer_data: {
+                        destination: process.env.STRIPE_CONNECT_ACCOUNT_ID,
+                    },
                 },
-            },
+            } : {}),
 
             // Collect customer information
             customer_creation: "always",
@@ -115,16 +118,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         });
     } catch (error) {
         console.error("Error creating checkout session:", error);
+        console.error("Error details:", {
+            message: error?.message,
+            stack: error?.stack,
+            donationType,
+            amount,
+            connectAccountId: process.env.STRIPE_CONNECT_ACCOUNT_ID
+        });
 
         if (error instanceof Stripe.errors.StripeError) {
             return res.status(400).json({
                 error: `Stripe error: ${error.message}`,
                 type: error.type,
+                details: error.detail || null,
             });
         }
 
         return res.status(500).json({
             error: "Internal server error while creating checkout session",
+            message: error?.message || "Unknown error",
         });
     }
 }
