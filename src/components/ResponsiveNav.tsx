@@ -210,7 +210,7 @@ export function ResponsiveNav({
             ],
         },
         {
-            label: "Pledge",
+            label: "Home",
             bgColor: "#D5ADFF",
             textColor: "#000000",
             onLabelClick: () => handleNavClick("home"),
@@ -240,7 +240,7 @@ export function ResponsiveNav({
         },
         {
             label: "About",
-            bgColor: "#4038ef",
+            bgColor: "#d5aaff",
             textColor: "#ffffff",
             onLabelClick: () => handleNavClick("about"),
             links: [

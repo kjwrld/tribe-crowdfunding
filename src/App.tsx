@@ -1707,7 +1707,7 @@ function ContactFormInput({
 
                 {/* Input Container - Updated Border Color with Error State */}
                 <div
-                    className={`relative z-10 bg-white border-2 rounded-[12px] sm:rounded-[15px] shrink-0 w-full transition-all duration-300 shadow-lg hover:shadow-xl focus-within:shadow-2xl ${
+                    className={`relative z-10 bg-white border-2 rounded-[12px] sm:rounded-[15px] shrink-0 w-full transition-all duration-300 ${
                         error
                             ? "border-red-400 focus-within:border-red-500"
                             : "border-[#e5e7eb] focus-within:border-[#3e1c85]"
@@ -2207,7 +2207,7 @@ function ContactFormSection({
 
                         {/* Success Message */}
                         {successMessage && (
-                            <motion.div 
+                            <motion.div
                                 className="w-full p-6 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 text-green-800 rounded-[16px] text-center shadow-lg"
                                 initial={{ opacity: 0, scale: 0.95, y: 10 }}
                                 animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -2215,17 +2215,17 @@ function ContactFormSection({
                             >
                                 <div className="flex items-center justify-center gap-3 mb-2">
                                     <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                                        <svg 
-                                            className="w-5 h-5 text-white" 
-                                            fill="none" 
-                                            viewBox="0 0 24 24" 
+                                        <svg
+                                            className="w-5 h-5 text-white"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
                                             stroke="currentColor"
                                         >
-                                            <path 
-                                                strokeLinecap="round" 
-                                                strokeLinejoin="round" 
-                                                strokeWidth={2} 
-                                                d="M5 13l4 4L19 7" 
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M5 13l4 4L19 7"
                                             />
                                         </svg>
                                     </div>
@@ -2241,7 +2241,7 @@ function ContactFormSection({
 
                         {/* Error Message */}
                         {error && (
-                            <motion.div 
+                            <motion.div
                                 className="w-full p-6 bg-gradient-to-r from-red-50 to-rose-50 border-2 border-red-300 text-red-800 rounded-[16px] text-center shadow-lg"
                                 initial={{ opacity: 0, scale: 0.95, y: 10 }}
                                 animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -2249,17 +2249,17 @@ function ContactFormSection({
                             >
                                 <div className="flex items-center justify-center gap-3 mb-2">
                                     <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
-                                        <svg 
-                                            className="w-5 h-5 text-white" 
-                                            fill="none" 
-                                            viewBox="0 0 24 24" 
+                                        <svg
+                                            className="w-5 h-5 text-white"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
                                             stroke="currentColor"
                                         >
-                                            <path 
-                                                strokeLinecap="round" 
-                                                strokeLinejoin="round" 
-                                                strokeWidth={2} 
-                                                d="M6 18L18 6M6 6l12 12" 
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M6 18L18 6M6 6l12 12"
                                             />
                                         </svg>
                                     </div>
