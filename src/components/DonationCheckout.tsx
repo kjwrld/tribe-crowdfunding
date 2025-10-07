@@ -88,7 +88,7 @@ export function useStripeCheckout() {
 
     const createCheckoutSession = async (
         amount: string,
-        donationType: "one-time"
+        donationType: "one-time" | "monthly"
     ) => {
         try {
             setIsLoading(true);
@@ -114,10 +114,10 @@ export function useStripeCheckout() {
                 },
                 body: JSON.stringify({
                     amount: parseInt(amount),
-                    donationType: "one-time",
-                    description: `YGBverse One-Time Donation - $${amount}`,
+                    donationType: donationType,
+                    description: `YGBverse ${donationType === "monthly" ? "Monthly" : "One-Time"} Donation - $${amount}`,
                     currency: "usd",
-                    productId: "one-time",
+                    productId: donationType === "monthly" ? "subscription" : "one-time",
                 }),
             });
 
