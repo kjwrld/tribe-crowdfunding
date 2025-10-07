@@ -19,7 +19,7 @@
         "api/health.js": {
             "maxDuration": 10
         },
-        "api/contact.ts": {
+        "api/contact.js": {
             "maxDuration": 30
         }
     },
