@@ -137,7 +137,7 @@ module.exports = async function handler(req, res) {
             success: true,
             message: "Thank you for your message! We'll get back to you soon.",
         });
-    } catch (error: any) {
+    } catch (error) {
         console.error("❌ Contact API error:", error);
         res.status(500).json({
             error: "Failed to process contact form",
