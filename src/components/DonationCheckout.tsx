@@ -117,7 +117,6 @@ export function useStripeCheckout() {
                     donationType: donationType,
                     description: `YGBverse ${donationType === "monthly" ? "Monthly" : "One-Time"} Donation - $${amount}`,
                     currency: "usd",
-                    productId: donationType === "monthly" ? "subscription" : "one-time",
                 }),
             });
 
