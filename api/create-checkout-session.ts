@@ -77,15 +77,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 },
             ],
 
-            // Stripe Connect: Only for one-time payments (not subscriptions)
+            // Stripe Connect configuration
             ...(donationType === "one-time" ? {
+                // One-time payment: Use payment_intent_data
                 payment_intent_data: {
                     application_fee_amount: Math.round(amount * 100 * 0.05), // 5% platform fee
                     transfer_data: {
                         destination: process.env.STRIPE_CONNECT_ACCOUNT_ID,
                     },
                 },
-            } : {}),
+            } : {
+                // Monthly subscription: Use subscription_data
+                subscription_data: {
+                    application_fee_percent: 5, // 5% platform fee
+                    on_behalf_of: process.env.STRIPE_CONNECT_ACCOUNT_ID,
+                    transfer_data: {
+                        destination: process.env.STRIPE_CONNECT_ACCOUNT_ID,
+                    },
+                },
+            }),
 
             // Collect customer information
             customer_creation: "always",

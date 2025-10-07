@@ -61,12 +61,25 @@ app.post("/api/create-checkout-session", async (req, res) => {
                 },
             ],
 
-            payment_intent_data: {
-                application_fee_amount: Math.round(amount * 100 * 0.05),
-                transfer_data: {
-                    destination: process.env.STRIPE_CONNECT_ACCOUNT_ID,
+            // Stripe Connect configuration
+            ...(donationType === "one-time" ? {
+                // One-time payment: Use payment_intent_data
+                payment_intent_data: {
+                    application_fee_amount: Math.round(amount * 100 * 0.05), // 5% platform fee
+                    transfer_data: {
+                        destination: process.env.STRIPE_CONNECT_ACCOUNT_ID,
+                    },
                 },
-            },
+            } : {
+                // Monthly subscription: Use subscription_data
+                subscription_data: {
+                    application_fee_percent: 5, // 5% platform fee
+                    on_behalf_of: process.env.STRIPE_CONNECT_ACCOUNT_ID,
+                    transfer_data: {
+                        destination: process.env.STRIPE_CONNECT_ACCOUNT_ID,
+                    },
+                },
+            }),
 
             success_url: `${
                 process.env.FRONTEND_URL_DEV || "http://localhost:3000"
