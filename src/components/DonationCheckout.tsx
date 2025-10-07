@@ -88,7 +88,8 @@ export function useStripeCheckout() {
 
     const createCheckoutSession = async (
         amount: string,
-        donationType: "one-time" | "monthly"
+        donationType: "one-time" | "monthly",
+        tier?: "explorer" | "steamer" | "ygber"
     ) => {
         try {
             setIsLoading(true);
@@ -115,6 +116,7 @@ export function useStripeCheckout() {
                 body: JSON.stringify({
                     amount: parseInt(amount),
                     donationType: donationType,
+                    tier: tier,
                     description: `YGBverse ${donationType === "monthly" ? "Monthly" : "One-Time"} Donation - $${amount}`,
                     currency: "usd",
                 }),

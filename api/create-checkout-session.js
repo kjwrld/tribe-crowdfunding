@@ -13,6 +13,7 @@ export default async function handler(req, res) {
         const {
             amount,
             donationType,
+            tier,
             description,
             currency = "usd",
         } = req.body;
@@ -32,15 +33,13 @@ export default async function handler(req, res) {
 
         // Map tier names to existing Stripe price IDs for monthly subscriptions
         const getLineItems = () => {
-            if (donationType === "monthly") {
-                const numAmount = parseInt(amount);
-                
-                switch (numAmount) {
-                    case 199:
+            if (donationType === "monthly" && tier) {
+                switch (tier) {
+                    case "explorer":
                         return [{ price: process.env.STRIPE_PRICE_EXPLORER_MONTHLY, quantity: 1 }];
-                    case 599:
+                    case "steamer":
                         return [{ price: process.env.STRIPE_PRICE_STEAMER_MONTHLY, quantity: 1 }];
-                    case 999:
+                    case "ygber":
                         return [{ price: process.env.STRIPE_PRICE_YGBER_MONTHLY, quantity: 1 }];
                     default:
                         // Custom amount - use price_data

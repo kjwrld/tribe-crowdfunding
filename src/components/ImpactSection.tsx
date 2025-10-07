@@ -47,7 +47,7 @@ function PricingTier({
             const amount = price.replace("$", "");
 
             // Create Stripe checkout session for monthly subscription
-            await createCheckoutSession(amount, "monthly");
+            await createCheckoutSession(amount, "monthly", tier);
 
             // Trigger confetti for successful redirect
             onConfetti?.(buttonCenter);
