@@ -34,26 +34,17 @@ export function useMailchimp() {
         setError(null);
 
         try {
-            // Since this is a frontend-only app, we'll use a simple fetch approach
-            // In production, you'd want to use a serverless function or backend API
-            const response = await fetch("/api/mailchimp", {
+            // Call our contact API endpoint
+            const response = await fetch("/api/contact", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    email: formData.email,
                     name: formData.name,
+                    email: formData.email,
                     subject: formData.subject,
                     message: formData.message,
-                    // Additional merge fields for Mailchimp
-                    merge_fields: {
-                        FNAME: formData.name.split(" ")[0] || formData.name,
-                        LNAME:
-                            formData.name.split(" ").slice(1).join(" ") || "",
-                        SUBJECT: formData.subject,
-                        MESSAGE: formData.message,
-                    },
                 }),
             });
 
@@ -66,10 +57,10 @@ export function useMailchimp() {
             if (result.success) {
                 return {
                     success: true,
-                    message: "Successfully subscribed to our newsletter!",
+                    message: result.message || "Thank you for your message! We'll get back to you soon.",
                 };
             } else {
-                throw new Error(result.message || "Failed to subscribe");
+                throw new Error(result.message || "Failed to submit contact form");
             }
         } catch (err) {
             const errorMessage =
@@ -78,14 +69,9 @@ export function useMailchimp() {
                     : "An unexpected error occurred";
             setError(errorMessage);
 
-            // For now, since we don't have a backend, let's simulate success
-            // and log the form data to console
-            // console.log('Contact form submission (simulated):', formData);
-
             return {
-                success: true,
-                message:
-                    "Thank you for your message! We'll get back to you soon.",
+                success: false,
+                message: errorMessage,
             };
         } finally {
             setIsLoading(false);
