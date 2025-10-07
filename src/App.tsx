@@ -28,7 +28,6 @@ import { Explore } from "./components/Explore";
 import { ImpactSection } from "./components/ImpactSection";
 import AboutPage from "./components/AboutPage";
 import { PaymentSuccess } from "./components/PaymentSuccess";
-import { TestDonationButton } from "./components/TestDonationButton";
 
 // Responsive Hero Title Component with Text Reveal Animation
 function Frame61858() {
@@ -200,7 +199,7 @@ function FormHeroBanner({
             }
 
             const session = await response.json();
-            console.log("Checkout session created:", session);
+            // console.log("Checkout session created:", session);
 
             // Redirect to Stripe Checkout
             if (session.url) {
@@ -261,8 +260,8 @@ function FormHeroBanner({
                         {/* Header */}
                         <div className="flex flex-col gap-4 items-center text-center mb-8">
                             <p className="font-['Nunito:Regular',_sans-serif] font-normal text-[#6b7280] text-[16px] md:text-[18px] leading-relaxed max-w-[400px]">
-                                Your pledge fuels access, equity, and joy in
-                                STEM education.
+                                Your pledge fuels access, equity, <br /> and joy
+                                in STEM education.
                             </p>
                         </div>
 
@@ -419,8 +418,8 @@ function FormHeroBanner({
                         {/* Header */}
                         <div className="flex flex-col gap-4 items-center text-center mb-8">
                             <p className="font-['Nunito:Regular',_sans-serif] font-normal text-[#6b7280] text-[16px] md:text-[18px] leading-relaxed max-w-[400px]">
-                                Your pledge fuels access, equity, and joy in
-                                STEM education.
+                                Your pledge fuels access, equity, <br /> and joy
+                                in STEM education.
                             </p>
                         </div>
 
@@ -1504,7 +1503,7 @@ function SolutionFeatureGrid({ isInView }: { isInView: boolean }) {
             <div className="w-full h-[180px]">
                 <FeatureCard
                     icon={<CommunityIcon />}
-                    title="Cross-Cultural Community"
+                    title="NGSS/NAEP Aligned"
                     delay={0.7}
                     isInView={isInView}
                     cardIndex={2}
@@ -1866,7 +1865,7 @@ function ContactForm({ isInView }: { isInView: boolean }) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("Contact form submitted:", formData);
+        // console.log("Contact form submitted:", formData);
         // Handle form submission here
     };
 
@@ -2631,9 +2630,6 @@ export default function App() {
             {showPaymentSuccess && (
                 <PaymentSuccess onClose={handleClosePaymentSuccess} />
             )}
-
-            {/* Test Donation Button - Only in development */}
-            <TestDonationButton />
         </div>
     );
 }

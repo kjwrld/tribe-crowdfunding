@@ -1,106 +1,130 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
-import Stripe from 'stripe';
+import type { VercelRequest, VercelResponse } from "@vercel/node";
+import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-12-18.acacia',
+    apiVersion: "2024-12-18.acacia",
 });
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  try {
-    const { amount, donationType, description, currency = 'usd', productId } = req.body;
-
-    if (!amount || !donationType) {
-      return res.status(400).json({ error: 'Missing required fields: amount, donationType' });
+    if (req.method !== "POST") {
+        return res.status(405).json({ error: "Method not allowed" });
     }
 
-    console.log('Creating checkout session:', { amount, donationType, description });
+    try {
+        const {
+            amount,
+            donationType,
+            description,
+            currency = "usd",
+            productId,
+        } = req.body;
 
-    // Determine the success URL based on donation type
-    const baseUrl = process.env.VERCEL_URL 
-      ? `https://${process.env.VERCEL_URL}` 
-      : 'http://localhost:5173';
+        if (!amount || !donationType) {
+            return res.status(400).json({
+                error: "Missing required fields: amount, donationType",
+            });
+        }
 
-    const successUrl = `${baseUrl}/?success=true&amount=${amount}&type=${donationType}&session_id={CHECKOUT_SESSION_ID}`;
-    const cancelUrl = `${baseUrl}/?canceled=true`;
+        // console.log("Creating checkout session:", {
+        //     amount,
+        //     donationType,
+        //     description,
+        // });
 
-    // Create Stripe checkout session
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      mode: donationType === 'monthly' ? 'subscription' : 'payment',
-      success_url: successUrl,
-      cancel_url: cancelUrl,
-      
-      // Line items
-      line_items: [
-        {
-          price_data: {
-            currency: currency,
-            product_data: {
-              name: description || `YGBverse ${donationType === 'monthly' ? 'Monthly' : 'One-Time'} Donation`,
-              description: 'Supporting STEM education for underrepresented students',
+        // Determine the success URL based on donation type
+        const baseUrl = process.env.VERCEL_URL
+            ? `https://${process.env.VERCEL_URL}`
+            : "http://localhost:5173";
+
+        const successUrl = `${baseUrl}/?success=true&amount=${amount}&type=${donationType}&session_id={CHECKOUT_SESSION_ID}`;
+        const cancelUrl = `${baseUrl}/?canceled=true`;
+
+        // Create Stripe checkout session
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ["card"],
+            mode: donationType === "monthly" ? "subscription" : "payment",
+            success_url: successUrl,
+            cancel_url: cancelUrl,
+
+            // Line items
+            line_items: [
+                {
+                    price_data: {
+                        currency: currency,
+                        product_data: {
+                            name:
+                                description ||
+                                `YGBverse ${
+                                    donationType === "monthly"
+                                        ? "Monthly"
+                                        : "One-Time"
+                                } Donation`,
+                            description:
+                                "Supporting STEM education for underrepresented students",
+                        },
+                        ...(donationType === "monthly"
+                            ? {
+                                  recurring: {
+                                      interval: "month",
+                                  },
+                                  unit_amount: Math.round(amount * 100), // Convert to cents
+                              }
+                            : {
+                                  unit_amount: Math.round(amount * 100), // Convert to cents
+                              }),
+                    },
+                    quantity: 1,
+                },
+            ],
+
+            payment_intent_data: {
+                application_fee_amount: Math.round(amount * 100 * 0.05),
+                transfer_data: {
+                    destination: process.env.STRIPE_CONNECT_ACCOUNT_ID,
+                },
             },
-            ...(donationType === 'monthly' 
-              ? {
-                  recurring: {
-                    interval: 'month',
-                  },
-                  unit_amount: Math.round(amount * 100), // Convert to cents
-                }
-              : {
-                  unit_amount: Math.round(amount * 100), // Convert to cents
-                }
-            ),
-          },
-          quantity: 1,
-        },
-      ],
-      
-      // Collect customer information
-      customer_creation: 'always',
-      billing_address_collection: 'required',
-      shipping_address_collection: {
-        allowed_countries: ['US', 'CA'],
-      },
-      phone_number_collection: {
-        enabled: true,
-      },
-      
-      // Metadata for tracking
-      metadata: {
-        donation_type: donationType,
-        amount: amount.toString(),
-        product_id: productId || 'one-time',
-      },
-      
-      // Automatic tax calculation (optional)
-      automatic_tax: {
-        enabled: false, // Set to true if you want to collect tax
-      },
-    });
 
-    console.log('Checkout session created successfully:', session.id);
+            // Collect customer information
+            customer_creation: "always",
+            billing_address_collection: "required",
+            shipping_address_collection: {
+                allowed_countries: ["US", "CA"],
+            },
+            phone_number_collection: {
+                enabled: true,
+            },
 
-    return res.status(200).json({
-      id: session.id,
-      url: session.url,
-    });
+            // Metadata for tracking
+            metadata: {
+                donation_type: donationType,
+                amount: amount.toString(),
+                product_id: productId || "one-time",
+            },
 
-  } catch (error) {
-    console.error('Error creating checkout session:', error);
-    
-    if (error instanceof Stripe.errors.StripeError) {
-      return res.status(400).json({ 
-        error: `Stripe error: ${error.message}`,
-        type: error.type,
-      });
+            // Automatic tax calculation (optional)
+            automatic_tax: {
+                enabled: false, // Set to true if you want to collect tax
+            },
+        });
+
+        // console.log("Checkout session created successfully:", session.id);
+
+        return res.status(200).json({
+            id: session.id,
+            url: session.url,
+        });
+    } catch (error) {
+        console.error("Error creating checkout session:", error);
+
+        if (error instanceof Stripe.errors.StripeError) {
+            return res.status(400).json({
+                error: `Stripe error: ${error.message}`,
+                type: error.type,
+            });
+        }
+
+        return res.status(500).json({
+            error: "Internal server error while creating checkout session",
+        });
     }
-    
-    return res.status(500).json({ 
-      error: 'Internal server error while creating checkout session' 
-    });
-  }
 }
