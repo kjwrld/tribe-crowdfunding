@@ -1,71 +1,71 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "build",
-  "devCommand": "npm run dev",
-  "framework": "vite",
-  "functions": {
-    "api/create-checkout-session.ts": {
-      "maxDuration": 30
-    },
-    "api/stripe-webhook.ts": {
-      "maxDuration": 30
-    },
-    "api/get-session-data.ts": {
-      "maxDuration": 30
-    },
-    "api/mailchimp/donation.ts": {
-      "maxDuration": 30
-    },
-    "api/health.js": {
-      "maxDuration": 10
-    }
-  },
-  "redirects": [
-    {
-      "source": "/(success|cancel)(.*)",
-      "destination": "/index.html"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)\\.webp",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
+    "buildCommand": "npm run build",
+    "outputDirectory": "build",
+    "devCommand": "npm run dev",
+    "framework": "vite",
+    "functions": {
+        "api/create-checkout-session.js": {
+            "maxDuration": 30
+        },
+        "api/stripe-webhook.ts": {
+            "maxDuration": 30
+        },
+        "api/get-session-data.ts": {
+            "maxDuration": 30
+        },
+        "api/mailchimp/donation.ts": {
+            "maxDuration": 30
+        },
+        "api/health.js": {
+            "maxDuration": 10
         }
-      ]
     },
-    {
-      "source": "/static/(.*)",
-      "headers": [
+    "redirects": [
         {
-          "key": "Cache-Control", 
-          "value": "public, max-age=31536000, immutable"
+            "source": "/(success|cancel)(.*)",
+            "destination": "/index.html"
         }
-      ]
-    },
-    {
-      "source": "/(.*)\\.glb",
-      "headers": [
+    ],
+    "headers": [
         {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
+            "source": "/(.*)\\.webp",
+            "headers": [
+                {
+                    "key": "Cache-Control",
+                    "value": "public, max-age=31536000, immutable"
+                }
+            ]
         },
         {
-          "key": "Content-Type",
-          "value": "model/gltf-binary"
-        }
-      ]
-    },
-    {
-      "source": "/models/(.*)",
-      "headers": [
+            "source": "/static/(.*)",
+            "headers": [
+                {
+                    "key": "Cache-Control",
+                    "value": "public, max-age=31536000, immutable"
+                }
+            ]
+        },
         {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
+            "source": "/(.*)\\.glb",
+            "headers": [
+                {
+                    "key": "Cache-Control",
+                    "value": "public, max-age=31536000, immutable"
+                },
+                {
+                    "key": "Content-Type",
+                    "value": "model/gltf-binary"
+                }
+            ]
+        },
+        {
+            "source": "/models/(.*)",
+            "headers": [
+                {
+                    "key": "Cache-Control",
+                    "value": "public, max-age=31536000, immutable"
+                }
+            ]
         }
-      ]
-    }
-  ]
+    ]
 }
