@@ -1,6 +1,6 @@
 import VerticalHero from "./VerticalHero";
 import RepresentationSection from "./RepresentationSection";
-import OurTeamSection from "./OurTeamSection";
+import FounderSection from "./FounderSection";
 
 interface AboutPageProps {
     onNavigate?: (page: "home" | "about" | "explore" | "crowdfunding") => void;
@@ -61,7 +61,7 @@ export default function AboutPage({ onNavigate, onConfetti }: AboutPageProps) {
                     <div className="content-stretch flex flex-col gap-[60px] md:gap-[80px] items-start justify-start relative size-full">
                         <VerticalHero />
                         <RepresentationSection />
-                        {/* <OurTeamSection /> */}
+                        <FounderSection />
                     </div>
                 </div>
             </div>

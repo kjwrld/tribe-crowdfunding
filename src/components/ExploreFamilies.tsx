@@ -79,7 +79,7 @@ export function ExploreFamilies() {
             }}
             transition={{ duration: 0.8, delay: sectionInView ? 0.3 : 0, ease: "easeOut" }}
           >
-            <div className="relative w-full h-[280px] sm:h-[360px] rounded-[20px] overflow-hidden group">
+            <div className="relative w-full aspect-[4/3] max-h-[50vh] min-h-[180px] rounded-[20px] overflow-hidden group">
               <ImageWithFallback
                 src={dashboardImageUrl}
                 alt="Family dashboard showing screen time analytics, progress reports, and parental controls"
@@ -91,7 +91,7 @@ export function ExploreFamilies() {
           </motion.div>
 
           {/* Features Section for Mobile/Tablet */}
-          <div className="w-full max-w-2xl mx-auto sm:max-w-3xl">
+          <div className="w-full max-w-sm mx-auto xs:max-w-md sm:max-w-2xl md:max-w-3xl">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <FeatureCard
                 icon={<TrendingUp className="w-6 h-6 text-[#8614ff]" />}

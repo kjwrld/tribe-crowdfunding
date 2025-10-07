@@ -738,8 +738,10 @@ function DonutChart({ isInView }: { isInView: boolean }) {
 
 // Main Dashboard Component
 export default function ClassProgress() {
-  const dashboardRef = useRef(null);
-  const isInView = useInView(dashboardRef, { once: true, margin: "-30%" });
+  const mobileRef = useRef(null);
+  const desktopRef = useRef(null);
+  const mobileInView = useInView(mobileRef, { once: true, margin: "-20%" });
+  const desktopInView = useInView(desktopRef, { once: true, margin: "-30%" });
   const [currentSection, setCurrentSection] = useState<string>('');
   const [delayedSection, setDelayedSection] = useState<string>('');
 
@@ -767,35 +769,47 @@ export default function ClassProgress() {
   ];
 
   return (
-    <div className="w-full max-w-6xl mx-auto p-6 relative">
+    <div className="w-full max-w-full lg:max-w-6xl mx-auto px-1 xs:px-2 sm:px-4 md:px-6 py-4 sm:py-6 relative overflow-hidden">
       {/* Mobile/Tablet: Dashboard Image (below 1024px) */}
-      <div className="block lg:hidden w-full">
+      <div className="block lg:hidden w-full max-w-full overflow-hidden flex justify-center">
         <motion.div
-          ref={dashboardRef}
-          className="relative rounded-[16px] overflow-hidden shadow-lg"
-          initial={{ opacity: 0, y: 20, scale: 0.98 }}
+          ref={mobileRef}
+          className="relative rounded-[12px] overflow-hidden shadow-lg"
+          style={{ 
+            maxWidth: '90vw',
+            width: '100%'
+          }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ 
-            opacity: isInView ? 1 : 0,
-            y: isInView ? 0 : 20, 
-            scale: isInView ? 1 : 0.98
+            opacity: 1,
+            y: 0
           }}
           transition={{ 
-            duration: 0.8, 
+            duration: 0.6, 
             delay: 0.1, 
-            ease: [0.25, 0.46, 0.45, 0.94] 
+            ease: "easeOut" 
           }}
         >
           <img 
             src={dashboardImage} 
             alt="YGBVerse Dashboard Overview" 
-            className="w-full h-auto rounded-[16px]"
+            className="block w-full h-auto rounded-[12px] mx-auto"
+            style={{ 
+              maxHeight: '25vh', 
+              minHeight: '80px',
+              width: '100%',
+              height: 'auto',
+              objectFit: 'contain',
+              maxWidth: '100%',
+              display: 'block'
+            }}
           />
         </motion.div>
       </div>
 
       {/* Desktop: Full Interactive Dashboard (1024px and above) */}
       <CursorProvider className="hidden lg:block w-full relative">
-        <div ref={dashboardRef} className="w-full h-full">
+        <div ref={desktopRef} className="w-full h-full">
         {/* Gentle Background Glow Animation */}
         <motion.div
           className="absolute inset-[-20px] rounded-[20px] pointer-events-none"
@@ -804,7 +818,7 @@ export default function ClassProgress() {
             filter: 'blur(20px)',
           }}
           initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: isInView ? 1 : 0, scale: isInView ? 1 : 0.8 }}
+          animate={{ opacity: desktopInView ? 1 : 0, scale: desktopInView ? 1 : 0.8 }}
           transition={{ duration: 1.5, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
         />
 
@@ -896,9 +910,9 @@ export default function ClassProgress() {
           className="relative bg-white/5 backdrop-blur-sm rounded-[16px] p-8"
           initial={{ opacity: 0, y: 20, scale: 0.98 }}
           animate={{ 
-            opacity: isInView ? 1 : 0,
-            y: isInView ? 0 : 20, 
-            scale: isInView ? 1 : 0.98
+            opacity: desktopInView ? 1 : 0,
+            y: desktopInView ? 0 : 20, 
+            scale: desktopInView ? 1 : 0.98
           }}
           transition={{ 
             duration: 0.8, 
@@ -919,7 +933,7 @@ export default function ClassProgress() {
               value="72%" 
               trend="↗ 8%" 
               delay={0.1}
-              isInView={isInView}
+              isInView={desktopInView}
               color="#8614ff"
             />
           </div>
@@ -929,7 +943,7 @@ export default function ClassProgress() {
               value="8" 
               trend="↗ 2" 
               delay={0.15}
-              isInView={isInView}
+              isInView={desktopInView}
               color="#70e2d8"
             />
           </div>
@@ -939,7 +953,7 @@ export default function ClassProgress() {
               value="18h 45m" 
               trend="↗ 2.4%" 
               delay={0.2}
-              isInView={isInView}
+              isInView={desktopInView}
               color="#2e7cff"
             />
           </div>
@@ -949,7 +963,7 @@ export default function ClassProgress() {
               value="85%" 
               trend="↗ 12%" 
               delay={0.25}
-              isInView={isInView}
+              isInView={desktopInView}
               color="#00c1ad"
             />
           </div>
@@ -966,9 +980,9 @@ export default function ClassProgress() {
             <motion.div
               initial={{ opacity: 0, y: 15, scale: 0.98 }}
               animate={{ 
-                opacity: isInView ? 1 : 0, 
-                y: isInView ? 0 : 15, 
-                scale: isInView ? 1 : 0.98 
+                opacity: desktopInView ? 1 : 0, 
+                y: desktopInView ? 0 : 15, 
+                scale: desktopInView ? 1 : 0.98 
               }}
               transition={{ 
                 duration: 0.7, 
@@ -985,9 +999,9 @@ export default function ClassProgress() {
             <motion.div
               initial={{ opacity: 0, y: 15, scale: 0.98 }}
               animate={{ 
-                opacity: isInView ? 1 : 0, 
-                y: isInView ? 0 : 15, 
-                scale: isInView ? 1 : 0.98 
+                opacity: desktopInView ? 1 : 0, 
+                y: desktopInView ? 0 : 15, 
+                scale: desktopInView ? 1 : 0.98 
               }}
               transition={{ 
                 duration: 0.7, 
@@ -997,15 +1011,15 @@ export default function ClassProgress() {
               onMouseEnter={() => setCurrentSection('Screen Time Overview')}
               onMouseLeave={() => setCurrentSection('')}
             >
-              <TimeChart isInView={isInView} />
+              <TimeChart isInView={desktopInView} />
             </motion.div>
             
             <motion.div
               initial={{ opacity: 0, y: 15, scale: 0.98 }}
               animate={{ 
-                opacity: isInView ? 1 : 0, 
-                y: isInView ? 0 : 15, 
-                scale: isInView ? 1 : 0.98 
+                opacity: desktopInView ? 1 : 0, 
+                y: desktopInView ? 0 : 15, 
+                scale: desktopInView ? 1 : 0.98 
               }}
               transition={{ 
                 duration: 0.7, 
@@ -1015,7 +1029,7 @@ export default function ClassProgress() {
               onMouseEnter={() => setCurrentSection('Screen Time Breakdown')}
               onMouseLeave={() => setCurrentSection('')}
             >
-              <DonutChart isInView={isInView} />
+              <DonutChart isInView={desktopInView} />
             </motion.div>
           </div>
         </div>
@@ -1024,7 +1038,7 @@ export default function ClassProgress() {
         <motion.div
           className="absolute -right-4 top-1/2 transform -translate-y-1/2 flex flex-col gap-3 opacity-0 hover:opacity-100 transition-opacity duration-300"
           initial={{ x: 20, opacity: 0 }}
-          animate={{ x: isInView ? 0 : 20, opacity: 0 }}
+          animate={{ x: desktopInView ? 0 : 20, opacity: 0 }}
           transition={{ duration: 0.6, delay: 2.5 }}
           onMouseEnter={() => setCurrentSection('Dashboard Actions')}
           onMouseLeave={() => setCurrentSection('')}

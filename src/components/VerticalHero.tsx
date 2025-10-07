@@ -1,11 +1,19 @@
 import heroImage from "../assets/ed2b132e66660932ae3972504fc2fac4b26cbd68.png";
 import { motion } from "motion/react";
 import { useInView } from "motion/react";
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 
 function Frame61564() {
     const titleRef = useRef(null);
     const titleInView = useInView(titleRef, { once: true, margin: "-10%" });
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkIsMobile = () => setIsMobile(window.innerWidth < 768);
+        checkIsMobile();
+        window.addEventListener('resize', checkIsMobile);
+        return () => window.removeEventListener('resize', checkIsMobile);
+    }, []);
 
     const text = "Empower every kid to win in STEM";
     const words = text.split(" ");
@@ -33,12 +41,12 @@ function Frame61564() {
                                     >
                                         <motion.span
                                             className=""
-                                            initial={{ y: 100, opacity: 0 }}
-                                            animate={{
+                                            initial={isMobile ? { opacity: 1 } : { y: 100, opacity: 0 }}
+                                            animate={isMobile ? { opacity: 1 } : {
                                                 y: titleInView ? 0 : 100,
                                                 opacity: titleInView ? 1 : 0,
                                             }}
-                                            transition={{
+                                            transition={isMobile ? {} : {
                                                 duration: 0.8,
                                                 delay: titleInView
                                                     ? index * 0.2
@@ -54,12 +62,12 @@ function Frame61564() {
                                         </motion.span>
                                         <motion.span
                                             className=""
-                                            initial={{ y: 100, opacity: 0 }}
-                                            animate={{
+                                            initial={isMobile ? { opacity: 1 } : { y: 100, opacity: 0 }}
+                                            animate={isMobile ? { opacity: 1 } : {
                                                 y: titleInView ? 0 : 100,
                                                 opacity: titleInView ? 1 : 0,
                                             }}
-                                            transition={{
+                                            transition={isMobile ? {} : {
                                                 duration: 0.8,
                                                 delay: titleInView
                                                     ? (index + 1) * 0.2
@@ -75,12 +83,12 @@ function Frame61564() {
                                         </motion.span>
                                         <motion.span
                                             className="text-[#8614ff]"
-                                            initial={{ y: 100, opacity: 0 }}
-                                            animate={{
+                                            initial={isMobile ? { opacity: 1 } : { y: 100, opacity: 0 }}
+                                            animate={isMobile ? { opacity: 1 } : {
                                                 y: titleInView ? 0 : 100,
                                                 opacity: titleInView ? 1 : 0,
                                             }}
-                                            transition={{
+                                            transition={isMobile ? {} : {
                                                 duration: 0.8,
                                                 delay: titleInView
                                                     ? (index + 2) * 0.2
@@ -103,12 +111,12 @@ function Frame61564() {
                                 <motion.span
                                     key={index}
                                     className=""
-                                    initial={{ y: 100, opacity: 0 }}
-                                    animate={{
+                                    initial={isMobile ? { opacity: 1 } : { y: 100, opacity: 0 }}
+                                    animate={isMobile ? { opacity: 1 } : {
                                         y: titleInView ? 0 : 100,
                                         opacity: titleInView ? 1 : 0,
                                     }}
-                                    transition={{
+                                    transition={isMobile ? {} : {
                                         duration: 0.8,
                                         delay: titleInView ? index * 0.2 : 0,
                                         ease: [0.25, 0.46, 0.45, 0.94],
@@ -132,6 +140,14 @@ function Frame61564() {
 function Frame61766() {
     const subtitleRef = useRef(null);
     const isInView = useInView(subtitleRef, { once: true, margin: "-10%" });
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkIsMobile = () => setIsMobile(window.innerWidth < 768);
+        checkIsMobile();
+        window.addEventListener('resize', checkIsMobile);
+        return () => window.removeEventListener('resize', checkIsMobile);
+    }, []);
 
     return (
         <div className="content-stretch flex flex-col lg:flex-row gap-[40px] lg:gap-[80px] items-center justify-center lg:justify-around relative shrink-0 w-full max-w-6xl">
@@ -140,12 +156,12 @@ function Frame61766() {
                 {/* Pill with Our Mission & Vision */}
                 <motion.div
                     className="flex gap-[10px] items-center justify-center lg:justify-start relative shrink-0"
-                    initial={{ x: -30, opacity: 0 }}
-                    animate={{
+                    initial={isMobile ? { opacity: 1 } : { x: -30, opacity: 0 }}
+                    animate={isMobile ? { opacity: 1 } : {
                         x: isInView ? 0 : -30,
                         opacity: isInView ? 1 : 0,
                     }}
-                    transition={{
+                    transition={isMobile ? {} : {
                         duration: 0.8,
                         delay: isInView ? 0.2 : 0,
                         ease: "easeOut",
@@ -174,12 +190,12 @@ function Frame61766() {
                 <motion.div
                     ref={subtitleRef}
                     className="flex flex-col gap-[40px] items-center lg:items-start w-full"
-                    initial={{ y: 30, opacity: 0 }}
-                    animate={{
+                    initial={isMobile ? { opacity: 1 } : { y: 30, opacity: 0 }}
+                    animate={isMobile ? { opacity: 1 } : {
                         y: isInView ? 0 : 30,
                         opacity: isInView ? 1 : 0,
                     }}
-                    transition={{
+                    transition={isMobile ? {} : {
                         duration: 0.8,
                         delay: isInView ? 1.2 : 0,
                         ease: "easeOut",
@@ -213,12 +229,12 @@ function Frame61766() {
                 <motion.div
                     className="bg-center bg-contain bg-no-repeat h-[300px] md:h-[350px] lg:h-[450px] xl:h-[500px] w-[300px] md:w-[350px] lg:w-[450px] xl:w-[500px] opacity-90 shrink-0"
                     style={{ backgroundImage: `url('${heroImage}')` }}
-                    initial={{ x: 30, opacity: 0 }}
-                    animate={{
+                    initial={isMobile ? { opacity: 1 } : { x: 30, opacity: 0 }}
+                    animate={isMobile ? { opacity: 1 } : {
                         x: isInView ? 0 : 30,
                         opacity: isInView ? 1 : 0,
                     }}
-                    transition={{
+                    transition={isMobile ? {} : {
                         duration: 0.8,
                         delay: isInView ? 1.4 : 0,
                         ease: "easeOut",
@@ -245,7 +261,7 @@ export default function VerticalHero() {
             className="relative w-full min-h-screen"
             data-name="Vertical HERO"
         >
-            <div className="flex flex-col items-center justify-center relative w-full min-h-screen pt-20 md:pt-24 lg:pt-28">
+            <div className="flex flex-col items-center justify-center relative w-full min-h-screen pt-24 md:pt-24 lg:pt-28">
                 <div className="box-border content-stretch flex flex-col gap-[20px] md:gap-[24px] lg:gap-[32px] items-center justify-center px-4 md:px-8 lg:px-16 xl:px-24 py-12 md:py-16 lg:py-20 relative w-full max-w-7xl mx-auto">
                     <Frame61772 />
                 </div>

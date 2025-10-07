@@ -43,7 +43,7 @@ function FamiliesSection() {
             <div className="absolute bottom-8 left-8 w-12 h-12 border-l-2 border-b-2 border-white/30 opacity-60" />
             <div className="absolute bottom-8 right-8 w-12 h-12 border-r-2 border-b-2 border-white/30 opacity-60" />
 
-            <div className="max-w-7xl mx-auto px-4 lg:px-8 py-12">
+            <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-12">
                 {/* Section Header */}
                 <div ref={familiesRef} className="text-center mb-4">
                     <motion.h2
@@ -110,8 +110,8 @@ function FamiliesSection() {
                         ease: "easeOut",
                     }}
                 >
-                    <p className="font-['Nunito:Regular',_sans-serif] md:text-[20px] xl:text-[22px] text-white/90 leading-relaxed max-w-[600px] mx-auto text-[20px]">
-                        <span className="whitespace-nowrap">
+                    <p className="font-['Nunito:Regular',_sans-serif] text-[14px] xs:text-[15px] sm:text-[16px] md:text-[18px] lg:text-[20px] xl:text-[22px] text-white/90 leading-relaxed max-w-[90vw] sm:max-w-[600px] mx-auto px-2 sm:px-4">
+                        <span>
                             Progress report card data and information to help
                             your kid thrive.
                         </span>
