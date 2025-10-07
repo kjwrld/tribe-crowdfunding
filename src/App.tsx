@@ -28,6 +28,7 @@ import { Explore } from "./components/Explore";
 import { ImpactSection } from "./components/ImpactSection";
 import AboutPage from "./components/AboutPage";
 import { PaymentSuccess } from "./components/PaymentSuccess";
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 // Responsive Hero Title Component with Text Reveal Animation
 function Frame61858() {
@@ -2678,6 +2679,9 @@ export default function App() {
             {showPaymentSuccess && (
                 <PaymentSuccess onClose={handleClosePaymentSuccess} />
             )}
+            
+            {/* Vercel Speed Insights */}
+            <SpeedInsights />
         </div>
     );
 }
