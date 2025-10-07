@@ -30,41 +30,53 @@ export default async function handler(req, res) {
         const successUrl = `${baseUrl}/?success=true&amount=${amount}&type=${donationType}&session_id={CHECKOUT_SESSION_ID}`;
         const cancelUrl = `${baseUrl}/?canceled=true`;
 
+        // Map amounts to existing Stripe price IDs for monthly subscriptions
+        const getLineItems = () => {
+            if (donationType === "monthly") {
+                switch (amount) {
+                    case 199:
+                        return [{ price: process.env.STRIPE_PRICE_EXPLORER_MONTHLY, quantity: 1 }];
+                    case 599:
+                        return [{ price: process.env.STRIPE_PRICE_STEAMER_MONTHLY, quantity: 1 }];
+                    case 999:
+                        return [{ price: process.env.STRIPE_PRICE_YGBER_MONTHLY, quantity: 1 }];
+                    default:
+                        // Custom amount - use price_data
+                        return [{
+                            price_data: {
+                                currency: currency,
+                                product_data: {
+                                    name: description || `YGBverse Monthly Donation`,
+                                    description: "Supporting STEM education for underrepresented students",
+                                },
+                                recurring: { interval: "month" },
+                                unit_amount: Math.round(amount * 100),
+                            },
+                            quantity: 1,
+                        }];
+                }
+            } else {
+                // One-time payment - always use price_data
+                return [{
+                    price_data: {
+                        currency: currency,
+                        product_data: {
+                            name: description || `YGBverse One-Time Donation`,
+                            description: "Supporting STEM education for underrepresented students",
+                        },
+                        unit_amount: Math.round(amount * 100),
+                    },
+                    quantity: 1,
+                }];
+            }
+        };
+
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ["card"],
             mode: donationType === "monthly" ? "subscription" : "payment",
             success_url: successUrl,
             cancel_url: cancelUrl,
-
-            line_items: [
-                {
-                    price_data: {
-                        currency: currency,
-                        product_data: {
-                            name:
-                                description ||
-                                `YGBverse ${
-                                    donationType === "monthly"
-                                        ? "Monthly"
-                                        : "One-Time"
-                                } Donation`,
-                            description:
-                                "Supporting STEM education for underrepresented students",
-                        },
-                        ...(donationType === "monthly"
-                            ? {
-                                  recurring: {
-                                      interval: "month",
-                                  },
-                                  unit_amount: Math.round(amount * 100),
-                              }
-                            : {
-                                  unit_amount: Math.round(amount * 100),
-                              }),
-                    },
-                    quantity: 1,
-                },
-            ],
+            line_items: getLineItems(),
 
             // Stripe Connect configuration
             ...(donationType === "one-time" ? {
