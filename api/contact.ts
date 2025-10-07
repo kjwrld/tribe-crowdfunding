@@ -18,7 +18,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const audienceId = process.env.MAILCHIMP_AUDIENCE_ID;
 
         if (!apiKey || !audienceId) {
-            console.error("❌ Missing Mailchimp credentials");
+            console.error("❌ Missing Mailchimp credentials", { 
+                hasApiKey: !!apiKey, 
+                hasAudienceId: !!audienceId 
+            });
             return res.status(500).json({
                 error: "Mailchimp not configured",
             });
@@ -62,7 +65,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 console.log("📧 Contact already in audience, updating tags...");
 
                 // Update existing member with contact tag
-                const updateUrl = `https://${datacenter}.api.mailchimp.com/3.0/lists/${audienceId}/members/${email}`;
+                const updateUrl = `https://${datacenter}.api.mailchimp.com/3.0/lists/${audienceId}/members/${encodeURIComponent(email)}`;
                 const updateResponse = await fetch(updateUrl, {
                     method: "PATCH",
                     headers: {
@@ -99,7 +102,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         
         try {
             // Update the subscriber with additional merge fields including the message
-            const updateUrl = `https://${datacenter}.api.mailchimp.com/3.0/lists/${audienceId}/members/${email}`;
+            const updateUrl = `https://${datacenter}.api.mailchimp.com/3.0/lists/${audienceId}/members/${encodeURIComponent(email)}`;
             const updateResponse = await fetch(updateUrl, {
                 method: "PATCH",
                 headers: {

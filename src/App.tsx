@@ -1412,8 +1412,7 @@ function FeatureCard({
                         "linear-gradient(45deg, rgba(134, 20, 255, 0.06), rgba(154, 82, 235, 0.06), rgba(255, 107, 122, 0.06), rgba(245, 230, 184, 0.06), rgba(34, 197, 94, 0.06), rgba(134, 20, 255, 0.06))",
                     backgroundSize: "200% 200%",
                     filter: "blur(8px)",
-                    animation: `pulse-glow-shifting 4s ease-in-out infinite`,
-                    animationDelay: `${animationDelay}s`,
+                    animation: `pulse-glow-shifting 4s ease-in-out infinite ${animationDelay}s`,
                 }}
             />
 
@@ -1701,8 +1700,7 @@ function ContactFormInput({
                                 "linear-gradient(45deg, rgba(134, 20, 255, 0.3), rgba(154, 82, 235, 0.3), rgba(255, 107, 122, 0.3), rgba(245, 230, 184, 0.3), rgba(34, 197, 94, 0.3), rgba(134, 20, 255, 0.3))",
                             backgroundSize: "200% 200%",
                             filter: "blur(4px)",
-                            animation: `pulse-glow-shifting ${animationDuration}s ease-in-out infinite`,
-                            animationDelay: `${animationDelay}s`,
+                            animation: `pulse-glow-shifting ${animationDuration}s ease-in-out infinite ${animationDelay}s`,
                         }}
                     />
                 )}
