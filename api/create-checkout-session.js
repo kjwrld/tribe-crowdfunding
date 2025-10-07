@@ -30,10 +30,12 @@ export default async function handler(req, res) {
         const successUrl = `${baseUrl}/?success=true&amount=${amount}&type=${donationType}&session_id={CHECKOUT_SESSION_ID}`;
         const cancelUrl = `${baseUrl}/?canceled=true`;
 
-        // Map amounts to existing Stripe price IDs for monthly subscriptions
+        // Map tier names to existing Stripe price IDs for monthly subscriptions
         const getLineItems = () => {
             if (donationType === "monthly") {
-                switch (amount) {
+                const numAmount = parseInt(amount);
+                
+                switch (numAmount) {
                     case 199:
                         return [{ price: process.env.STRIPE_PRICE_EXPLORER_MONTHLY, quantity: 1 }];
                     case 599:
