@@ -883,7 +883,19 @@ function WhyItMattersHeader({ isInView }: { isInView: boolean }) {
     );
 }
 
-function AnimatedLineGraph({ isInView }: { isInView: boolean }) {
+function AnimatedLineGraph({
+    isInView,
+    currentStatIndex,
+}: {
+    isInView: boolean;
+    currentStatIndex: number;
+}) {
+    const dotPositions = [
+        { cx: 373, cy: 288 }, // 1% stat
+        { cx: 536, cy: 226 }, // 36% stat
+        { cx: 740, cy: 76 }, // 55% stat
+    ];
+
     return (
         <div className="h-[200px] md:h-[250px] lg:h-[300px] relative shrink-0 w-full max-w-[800px] mx-auto">
             <svg
@@ -908,23 +920,31 @@ function AnimatedLineGraph({ isInView }: { isInView: boolean }) {
                             delay: isInView ? 0.3 : 0,
                         }}
                     />
-                    {/* Middle circle positioned correctly on the path (36% statistic) */}
-                    <motion.circle
-                        cx="536"
-                        cy="226"
-                        fill="#7F1EE5"
-                        r="10"
-                        initial={{ scale: 0, opacity: 0 }}
-                        animate={{
-                            scale: isInView ? 1 : 0,
-                            opacity: isInView ? 1 : 0,
-                        }}
-                        transition={{
-                            duration: 0.5,
-                            ease: "easeOut",
-                            delay: isInView ? 1.2 : 0,
-                        }}
-                    />
+                    {/* Multiple circles that fade in/out based on current stat */}
+                    {dotPositions.map((position, index) => (
+                        <motion.circle
+                            key={index}
+                            cx={position.cx}
+                            cy={position.cy}
+                            fill="#7F1EE5"
+                            r="10"
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{
+                                scale:
+                                    isInView && currentStatIndex === index
+                                        ? 1
+                                        : 0,
+                                opacity:
+                                    isInView && currentStatIndex === index
+                                        ? 1
+                                        : 0,
+                            }}
+                            transition={{
+                                duration: 0.3,
+                                ease: "easeOut",
+                            }}
+                        />
+                    ))}
                 </g>
                 <defs>
                     <linearGradient
@@ -945,69 +965,51 @@ function AnimatedLineGraph({ isInView }: { isInView: boolean }) {
     );
 }
 
-function CountingNumberWhyMatters({
-    target,
+function CyclingStatistic({
     isInView,
-    delay = 0,
+    currentStatIndex,
 }: {
-    target: number;
     isInView: boolean;
-    delay?: number;
+    currentStatIndex: number;
 }) {
-    const [count, setCount] = useState(0);
+    const statistics = [
+        {
+            number: "1",
+            description:
+                "of heroes in kids' books and games reflect students of color.",
+            title: "Representation Gap",
+        },
+        {
+            number: "36",
+            description: "of U.S. 4th graders are proficient in STEM.",
+            title: "Proficiency Gap",
+        },
+        {
+            number: "55",
+            description:
+                "of U.S. public elementary students are kids of color.",
+            title: "Opportunity Gap",
+        },
+    ];
 
-    useEffect(() => {
-        if (!isInView) {
-            setCount(0);
-            return;
-        }
+    const currentStat = statistics[currentStatIndex];
 
-        const timer = setTimeout(() => {
-            const duration = 1200;
-            const steps = 60;
-            const increment = target / steps;
-            let current = 0;
-
-            const counter = setInterval(() => {
-                current += increment;
-                if (current >= target) {
-                    setCount(target);
-                    clearInterval(counter);
-                } else {
-                    setCount(Math.floor(current));
-                }
-            }, duration / steps);
-
-            return () => clearInterval(counter);
-        }, delay);
-
-        return () => clearTimeout(timer);
-    }, [target, isInView, delay]);
-
-    return <span className="text-[rgba(133,22,254,1)]">{count}</span>;
-}
-
-function CenterStatistic({ isInView }: { isInView: boolean }) {
     return (
         <div className="absolute content-stretch flex flex-col gap-1.5 md:gap-2.5 items-start justify-start leading-[0] left-[58%] top-[75%] transform -translate-x-1/4 sm:left-[60%] sm:top-[78%] lg:left-[58%] lg:top-[75%]">
             <motion.div
                 className="flex flex-col font-['Bungee:Regular',_sans-serif] justify-center min-w-full not-italic relative shrink-0 text-[#a047ff] text-[0px]"
                 style={{ width: "min-content" }}
+                key={currentStatIndex}
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: isInView ? 0 : 20, opacity: isInView ? 1 : 0 }}
                 transition={{
-                    duration: 0.6,
-                    delay: isInView ? 1.0 : 0,
+                    duration: 0.3,
                     ease: "easeOut",
                 }}
             >
                 <p className="leading-[36px] md:leading-[44px] lg:leading-[50px]">
-                    <span className="text-[36px] md:text-[48px] lg:text-[64px] xl:text-[72px] tracking-[-2px]">
-                        <CountingNumberWhyMatters
-                            target={36}
-                            isInView={isInView}
-                            delay={1000}
-                        />
+                    <span className="text-[36px] md:text-[48px] lg:text-[64px] xl:text-[72px] tracking-[-2px] text-[rgba(133,22,254,1)]">
+                        {currentStat.number}
                     </span>
                     <span className="text-[36px] md:text-[48px] lg:text-[64px] xl:text-[72px] tracking-[-2px] text-[rgba(133,22,254,1)]">
                         %
@@ -1016,16 +1018,16 @@ function CenterStatistic({ isInView }: { isInView: boolean }) {
             </motion.div>
             <motion.div
                 className="flex flex-col font-['Nunito:Regular',_sans-serif] font-normal justify-start relative shrink-0 text-[#8c92ab] text-[9px] md:text-[11px] lg:text-[12px] tracking-[0.12px] w-[100px] md:w-[120px] lg:w-[140px] text-left"
+                key={`desc-${currentStatIndex}`}
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: isInView ? 0 : 20, opacity: isInView ? 1 : 0 }}
                 transition={{
-                    duration: 0.6,
-                    delay: isInView ? 2.4 : 0,
+                    duration: 0.3,
                     ease: "easeOut",
                 }}
             >
                 <p className="leading-[14px] md:leading-[16px] lg:leading-[18px] text-[12px] text-left w-[160px] md:w-[170px] lg:w-[180px]">
-                    of U.S. 4th graders are proficient in STEM.
+                    {currentStat.description}
                 </p>
             </motion.div>
         </div>
@@ -1033,10 +1035,28 @@ function CenterStatistic({ isInView }: { isInView: boolean }) {
 }
 
 function GraphWithStatistics({ isInView }: { isInView: boolean }) {
+    const [currentStatIndex, setCurrentStatIndex] = useState(0);
+
+    useEffect(() => {
+        if (!isInView) return;
+
+        const interval = setInterval(() => {
+            setCurrentStatIndex((prev) => (prev + 1) % 3);
+        }, 5000); // 5 seconds
+
+        return () => clearInterval(interval);
+    }, [isInView]);
+
     return (
         <div className="content-stretch flex gap-[24px] h-[280px] md:h-[320px] lg:h-[360px] items-start justify-center relative shrink-0 w-full">
-            <AnimatedLineGraph isInView={isInView} />
-            <CenterStatistic isInView={isInView} />
+            <AnimatedLineGraph
+                isInView={isInView}
+                currentStatIndex={currentStatIndex}
+            />
+            <CyclingStatistic
+                isInView={isInView}
+                currentStatIndex={currentStatIndex}
+            />
         </div>
     );
 }
@@ -1060,26 +1080,6 @@ function EyeIcon() {
                 </defs>
             </svg>
         </div>
-    );
-}
-
-function SeeTheSolutionButton() {
-    return (
-        <motion.button
-            className="bg-[#782acb] hover:bg-[#6d25b3] transition-colors box-border content-stretch flex h-[65px] items-center justify-between px-[24px] py-[15px] relative rounded-[12px] shadow-[0px_10px_25px_rgba(120,42,203,0.3)] shrink-0 w-[237px]"
-            whileHover={{ y: -2, scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            transition={{ duration: 0.2 }}
-        >
-            <div className="basis-0 box-border content-stretch flex grow h-[65px] items-center justify-between min-h-px min-w-px px-0 py-[15px] relative rounded-[12px] shrink-0">
-                <div className="font-['Nunito:Medium',_sans-serif] font-medium leading-[0] relative shrink-0 text-[16px] text-nowrap text-white">
-                    <p className="leading-[normal] whitespace-pre">
-                        See the Solution
-                    </p>
-                </div>
-                <EyeIcon />
-            </div>
-        </motion.button>
     );
 }
 
@@ -1134,7 +1134,7 @@ function WhyItMattersSection() {
             <div className="flex flex-col items-center relative w-full">
                 <div className="box-border content-stretch flex flex-col gap-[40px] md:gap-[50px] items-center px-[32px] relative w-full max-w-6xl">
                     <motion.div
-                        className="content-stretch flex flex-col gap-[32px] md:gap-[40px] items-center relative shrink-0 w-full"
+                        className="content-stretch flex flex-col gap-[24px] md:gap-[40px] items-center relative shrink-0 w-full"
                         initial={{ y: 20, opacity: 0 }}
                         animate={{
                             y: sectionInView ? 0 : 20,
