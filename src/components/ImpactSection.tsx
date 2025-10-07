@@ -46,8 +46,8 @@ function PricingTier({
             // Extract amount from price (remove $ sign)
             const amount = price.replace("$", "");
 
-            // Create Stripe checkout session for one-time payment
-            await createCheckoutSession(amount, "one-time");
+            // Create Stripe checkout session for monthly subscription
+            await createCheckoutSession(amount, "monthly");
 
             // Trigger confetti for successful redirect
             onConfetti?.(buttonCenter);
