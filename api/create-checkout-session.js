@@ -80,9 +80,6 @@ export default async function handler(req, res) {
             ...(donationType === "one-time" ? {
                 payment_intent_data: {
                     application_fee_amount: Math.round(amount * 100 * 0.05),
-                    transfer_data: {
-                        destination: process.env.STRIPE_CONNECT_ACCOUNT_ID,
-                    },
                 },
             } : {
                 subscription_data: {
