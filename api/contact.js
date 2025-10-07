@@ -1,4 +1,4 @@
-const { VercelRequest, VercelResponse } = require("@vercel/node");
+// No need to import types in JavaScript
 
 module.exports = async function handler(req, res) {
     if (req.method !== "POST") {
