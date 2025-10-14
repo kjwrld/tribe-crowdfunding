@@ -1,61 +1,149 @@
-
-  <!DOCTYPE html>
-  <html lang="en">
+<!DOCTYPE html>
+<html lang="en">
     <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>YGBVerse Home Page</title>
-      
-      <!-- Favicon -->
-      <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-      <link rel="icon" type="image/png" sizes="16x16" href="/ygb-fav-icon/favicon-16x16.png" />
-      <link rel="icon" type="image/png" sizes="32x32" href="/ygb-fav-icon/favicon-32x32.png" />
-      <link rel="apple-touch-icon" sizes="180x180" href="/ygb-fav-icon/apple-touch-icon.png" />
-      <link rel="icon" type="image/png" sizes="192x192" href="/ygb-fav-icon/android-chrome-192x192.png" />
-      <link rel="icon" type="image/png" sizes="512x512" href="/ygb-fav-icon/android-chrome-512x512.png" />
-      <link rel="manifest" href="/ygb-fav-icon/site.webmanifest" />
-      
-      <!-- Open Graph / Social Media Meta Tags -->
-      <meta property="og:type" content="website" />
-      <meta property="og:title" content="YGBVerse - Cultural Innovation Meets STEM Education" />
-      <meta property="og:description" content="Professional development meets cultural innovation. Transform your classroom with engaging, research-backed STEM tools." />
-      <meta property="og:image" content="/YGB-meta.webp" />
-      <meta property="og:url" content="https://ygbverse.com" />
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content="YGBVerse - Cultural Innovation Meets STEM Education" />
-      <meta name="twitter:description" content="Professional development meets cultural innovation. Transform your classroom with engaging, research-backed STEM tools." />
-      <meta name="twitter:image" content="/YGB-meta.webp" />
-      <link rel="preconnect" href="https://fonts.googleapis.com">
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-      <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Bungee&display=swap" rel="stylesheet">
-      
-      <!-- Preload 3D assets for faster loading -->
-      <link rel="prefetch" href="/models/rocket-draco.glb" as="fetch" crossorigin="anonymous">
-      <link rel="preload" href="/draco/gltf/draco_decoder.js" as="script" crossorigin="anonymous">
-      <link rel="preload" href="/draco/gltf/draco_decoder.wasm" as="fetch" crossorigin="anonymous">
-      
-      <!-- DNS prefetch for external resources -->
-      <link rel="dns-prefetch" href="//fonts.googleapis.com">
-      <link rel="dns-prefetch" href="//fonts.gstatic.com">
-      <style>
-        /* Inline CSS for maximum priority - Force Nunito everywhere except Bungee */
-        *, *::before, *::after, html, body, div, span, p, h1, h2, h3, h4, h5, h6, a, button, input, textarea, select, label, li, ul, ol, table, th, td, tr {
-          font-family: "Nunito", ui-sans-serif, system-ui, sans-serif !important;
-        }
-        /* Allow Bungee font to override Nunito */
-        [style*="Bungee"], .font-bungee, [class*="Bungee"] {
-          font-family: "Bungee", cursive !important;
-        }
-        html { font-family: "Nunito", ui-sans-serif, system-ui, sans-serif !important; }
-        body { font-family: "Nunito", ui-sans-serif, system-ui, sans-serif !important; }
-        #root { font-family: "Nunito", ui-sans-serif, system-ui, sans-serif !important; }
-        #root * { font-family: "Nunito", ui-sans-serif, system-ui, sans-serif !important; }
-      </style>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>YGBVerse - STEM for Every Kid</title>
+
+        <!-- Favicon -->
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="/ygb-fav-icon/favicon-16x16.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="/ygb-fav-icon/favicon-32x32.png"
+        />
+        <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="/ygb-fav-icon/apple-touch-icon.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="192x192"
+            href="/ygb-fav-icon/android-chrome-192x192.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="512x512"
+            href="/ygb-fav-icon/android-chrome-512x512.png"
+        />
+        <link rel="manifest" href="/ygb-fav-icon/site.webmanifest" />
+
+        <!-- Open Graph / Social Media Meta Tags -->
+        <meta property="og:type" content="website" />
+        <meta
+            property="og:title"
+            content="YGBVerse - Make STEM Culturally Relevant"
+        />
+        <meta
+            property="og:description"
+            content="Make STEM culturally relevant so every kid, everywhere, can succeed."
+        />
+        <meta property="og:image" content="/YGB-meta.webp" />
+        <meta property="og:url" content="https://ygbverse.com" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+            name="twitter:title"
+            content="YGBVerse - Make STEM Culturally Relevant"
+        />
+        <meta
+            name="twitter:description"
+            content="Make STEM culturally relevant so every kid, everywhere, can succeed."
+        />
+        <meta name="twitter:image" content="/YGB-meta.webp" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Bungee&display=swap"
+            rel="stylesheet"
+        />
+
+        <!-- Preload 3D assets for faster loading -->
+        <link
+            rel="prefetch"
+            href="/models/rocket-draco.glb"
+            as="fetch"
+            crossorigin="anonymous"
+        />
+        <link
+            rel="preload"
+            href="/draco/gltf/draco_decoder.js"
+            as="script"
+            crossorigin="anonymous"
+        />
+        <link
+            rel="preload"
+            href="/draco/gltf/draco_decoder.wasm"
+            as="fetch"
+            crossorigin="anonymous"
+        />
+
+        <!-- DNS prefetch for external resources -->
+        <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+        <style>
+            /* Inline CSS for maximum priority - Force Nunito everywhere except Bungee */
+            *,
+            *::before,
+            *::after,
+            html,
+            body,
+            div,
+            span,
+            p,
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6,
+            a,
+            button,
+            input,
+            textarea,
+            select,
+            label,
+            li,
+            ul,
+            ol,
+            table,
+            th,
+            td,
+            tr {
+                font-family: "Nunito", ui-sans-serif, system-ui, sans-serif !important;
+            }
+            /* Allow Bungee font to override Nunito */
+            [style*="Bungee"],
+            .font-bungee,
+            [class*="Bungee"] {
+                font-family: "Bungee", cursive !important;
+            }
+            html {
+                font-family: "Nunito", ui-sans-serif, system-ui, sans-serif !important;
+            }
+            body {
+                font-family: "Nunito", ui-sans-serif, system-ui, sans-serif !important;
+            }
+            #root {
+                font-family: "Nunito", ui-sans-serif, system-ui, sans-serif !important;
+            }
+            #root * {
+                font-family: "Nunito", ui-sans-serif, system-ui, sans-serif !important;
+            }
+        </style>
     </head>
 
     <body>
-      <div id="root"></div>
-      <script type="module" src="/src/main.tsx"></script>
+        <div id="root"></div>
+        <script type="module" src="/src/main.tsx"></script>
     </body>
-  </html>
-  
+</html>
