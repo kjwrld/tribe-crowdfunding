@@ -32,7 +32,7 @@ function EducatorCard({
     return (
         <motion.div
             className="relative rounded-[24px] shrink-0 border border-white/10
-                 bg-black/20 backdrop-blur-sm shadow-lg
+                 bg-black/20 backdrop-blur-sm shadow-lg h-full
                  hover:bg-black/30 hover:border-[#8614ff]/30 hover:shadow-2xl hover:shadow-[#8614ff]/10 
                  hover:-translate-y-2 hover:scale-[1.02]
                  transition-all duration-300 ease-out group"
@@ -61,21 +61,21 @@ function EducatorCard({
             />
 
             {/* Night Mode Content Container */}
-            <div className="relative z-10">
-                <div className="box-border content-stretch flex flex-col gap-[24px] h-full items-center justify-center overflow-clip p-[24px] relative z-10">
-                    <div className="content-stretch flex flex-col gap-[16px] items-center justify-center relative shrink-0 w-[141px]">
-                        <div className="box-border content-stretch flex flex-col gap-[6.38px] h-[43.979px] items-center justify-center overflow-clip p-[3.19px] relative shrink-0 w-[42.107px]">
-                            <div className="relative shrink-0 size-[45px] flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+            <div className="relative z-10 h-full">
+                <div className="box-border flex flex-col h-full items-center justify-between overflow-clip p-[24px] relative z-10">
+                    <div className="flex flex-col items-center justify-center flex-1">
+                        <div className="flex items-center justify-center mb-4">
+                            <div className="relative size-[45px] flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                                 {icon}
                             </div>
                         </div>
-                        <div className="font-['Nunito:Bold',_sans-serif] font-bold leading-[0] relative shrink-0 text-[#d5adff] group-hover:text-[#8614ff] text-[18px] text-center tracking-[0.36px] transition-colors duration-300">
-                            <p className="leading-[20px] w-[140px] text-center flex items-center justify-center min-h-[40px] text-[rgba(255,255,255,1)]">
+                        <div className="font-['Nunito:Bold',_sans-serif] font-bold text-[rgba(255,255,255,1)] text-[18px] text-center tracking-[0.36px] transition-colors duration-300 mb-3">
+                            <p className="leading-[22px] text-center">
                                 {title}
                             </p>
                         </div>
-                        <div className="font-['Nunito:Regular',_sans-serif] font-normal leading-[0] relative shrink-0 text-[#a0a8c0] group-hover:text-[#c4d0ff] text-[14px] text-center tracking-[0.28px] transition-colors duration-300">
-                            <p className="leading-[18px] w-[140px] text-center">
+                        <div className="font-['Nunito:Regular',_sans-serif] font-normal text-[#a0a8c0] group-hover:text-[#c4d0ff] text-[14px] text-center tracking-[0.28px] transition-colors duration-300">
+                            <p className="leading-[18px] text-center">
                                 {description}
                             </p>
                         </div>
@@ -134,7 +134,7 @@ function EducatorSolutionHeader({ isInView }: { isInView: boolean }) {
 function EducatorFeatureGrid({ isInView }: { isInView: boolean }) {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[31px] justify-center relative w-full max-w-[920px] mx-auto">
-            <div className="w-full h-[220px]">
+            <div className="w-full h-[220px] md:h-[320px]">
                 <EducatorCard
                     icon={
                         <BarChart3 className="w-8 h-8 text-[#70e2d8] group-hover:text-[#00ffe6] transition-colors duration-300" />
@@ -146,7 +146,7 @@ function EducatorFeatureGrid({ isInView }: { isInView: boolean }) {
                     cardIndex={0}
                 />
             </div>
-            <div className="w-full h-[220px]">
+            <div className="w-full h-[220px] md:h-[320px]">
                 <EducatorCard
                     icon={
                         <BookOpen className="w-8 h-8 text-[#8614ff] group-hover:text-[#a855f7] transition-colors duration-300" />
@@ -158,7 +158,7 @@ function EducatorFeatureGrid({ isInView }: { isInView: boolean }) {
                     cardIndex={1}
                 />
             </div>
-            <div className="w-full h-[220px]">
+            <div className="w-full h-[220px] md:h-[320px]">
                 <EducatorCard
                     icon={
                         <GraduationCap className="w-8 h-8 text-[#2e7cff] group-hover:text-[#60a5fa] transition-colors duration-300" />
@@ -170,7 +170,7 @@ function EducatorFeatureGrid({ isInView }: { isInView: boolean }) {
                     cardIndex={2}
                 />
             </div>
-            <div className="w-full h-[220px]">
+            <div className="w-full h-[220px] md:h-[320px]">
                 <EducatorCard
                     icon={
                         <Target className="w-8 h-8 text-[#d5adff] group-hover:text-[#e879f9] transition-colors duration-300" />
