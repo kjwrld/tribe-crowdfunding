@@ -9,7 +9,7 @@ import {
     Star,
     Rocket,
 } from "lucide-react";
-import exampleImage from "../assets/24ffbe288bce42e59626a63b1da81bcb21dce94f.png";
+import exampleImage from "../assets/webp/24ffbe288bce42e59626a63b1da81bcb21dce94f.webp";
 
 function ExploreKidsTitle({ isInView }: { isInView: boolean }) {
     const [animateKids, setAnimateKids] = useState(false);

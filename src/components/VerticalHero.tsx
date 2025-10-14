@@ -1,4 +1,4 @@
-import heroImage from "../assets/ed2b132e66660932ae3972504fc2fac4b26cbd68.png";
+import heroImage from "../assets/webp/ed2b132e66660932ae3972504fc2fac4b26cbd68.webp";
 import { motion } from "motion/react";
 import { useInView } from "motion/react";
 import { useRef, useEffect, useState } from "react";
@@ -6,13 +6,15 @@ import { useRef, useEffect, useState } from "react";
 function Frame61564() {
     const titleRef = useRef(null);
     const titleInView = useInView(titleRef, { once: true, margin: "-10%" });
-    const [isMobile, setIsMobile] = useState(false);
+    const [isMobile, setIsMobile] = useState(true);
+    const [isClient, setIsClient] = useState(false);
 
     useEffect(() => {
+        setIsClient(true);
         const checkIsMobile = () => setIsMobile(window.innerWidth < 768);
         checkIsMobile();
-        window.addEventListener('resize', checkIsMobile);
-        return () => window.removeEventListener('resize', checkIsMobile);
+        window.addEventListener("resize", checkIsMobile);
+        return () => window.removeEventListener("resize", checkIsMobile);
     }, []);
 
     const text = "Empower every kid to win in STEM";
@@ -26,7 +28,7 @@ function Frame61564() {
             >
                 <div className="font-['Nunito:Bold',_sans-serif] font-bold relative text-[#d5adff] leading-tight overflow-hidden">
                     <motion.p
-                        className="mb-0 text-[42px] sm:text-[48px] md:text-[48px] lg:text-[56px] xl:text-[64px] leading-[1.25]"
+                        className="mb-0 text-[32px] sm:text-[38px] md:text-[48px] lg:text-[64px] xl:text-[72px] leading-[1.2] px-4"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: titleInView ? 1 : 0 }}
                     >
@@ -41,18 +43,37 @@ function Frame61564() {
                                     >
                                         <motion.span
                                             className=""
-                                            initial={isMobile ? { opacity: 1 } : { y: 100, opacity: 0 }}
-                                            animate={isMobile ? { opacity: 1 } : {
-                                                y: titleInView ? 0 : 100,
-                                                opacity: titleInView ? 1 : 0,
-                                            }}
-                                            transition={isMobile ? {} : {
-                                                duration: 0.8,
-                                                delay: titleInView
-                                                    ? index * 0.2
-                                                    : 0,
-                                                ease: [0.25, 0.46, 0.45, 0.94],
-                                            }}
+                                            initial={
+                                                !isClient || isMobile
+                                                    ? { opacity: 1 }
+                                                    : { y: 100, opacity: 0 }
+                                            }
+                                            animate={
+                                                !isClient || isMobile
+                                                    ? { opacity: 1 }
+                                                    : {
+                                                          y: titleInView
+                                                              ? 0
+                                                              : 100,
+                                                          opacity: titleInView
+                                                              ? 1
+                                                              : 0,
+                                                      }
+                                            }
+                                            transition={
+                                                !isClient || isMobile
+                                                    ? {}
+                                                    : {
+                                                          duration: 0.8,
+                                                          delay: titleInView
+                                                              ? index * 0.2
+                                                              : 0,
+                                                          ease: [
+                                                              0.25, 0.46, 0.45,
+                                                              0.94,
+                                                          ],
+                                                      }
+                                            }
                                             style={{
                                                 display: "inline-block",
                                                 marginRight: "0.3em",
@@ -62,18 +83,38 @@ function Frame61564() {
                                         </motion.span>
                                         <motion.span
                                             className=""
-                                            initial={isMobile ? { opacity: 1 } : { y: 100, opacity: 0 }}
-                                            animate={isMobile ? { opacity: 1 } : {
-                                                y: titleInView ? 0 : 100,
-                                                opacity: titleInView ? 1 : 0,
-                                            }}
-                                            transition={isMobile ? {} : {
-                                                duration: 0.8,
-                                                delay: titleInView
-                                                    ? (index + 1) * 0.2
-                                                    : 0,
-                                                ease: [0.25, 0.46, 0.45, 0.94],
-                                            }}
+                                            initial={
+                                                !isClient || isMobile
+                                                    ? { opacity: 1 }
+                                                    : { y: 100, opacity: 0 }
+                                            }
+                                            animate={
+                                                !isClient || isMobile
+                                                    ? { opacity: 1 }
+                                                    : {
+                                                          y: titleInView
+                                                              ? 0
+                                                              : 100,
+                                                          opacity: titleInView
+                                                              ? 1
+                                                              : 0,
+                                                      }
+                                            }
+                                            transition={
+                                                !isClient || isMobile
+                                                    ? {}
+                                                    : {
+                                                          duration: 0.8,
+                                                          delay: titleInView
+                                                              ? (index + 1) *
+                                                                0.2
+                                                              : 0,
+                                                          ease: [
+                                                              0.25, 0.46, 0.45,
+                                                              0.94,
+                                                          ],
+                                                      }
+                                            }
                                             style={{
                                                 display: "inline-block",
                                                 marginRight: "0.3em",
@@ -83,18 +124,38 @@ function Frame61564() {
                                         </motion.span>
                                         <motion.span
                                             className="text-[#8614ff]"
-                                            initial={isMobile ? { opacity: 1 } : { y: 100, opacity: 0 }}
-                                            animate={isMobile ? { opacity: 1 } : {
-                                                y: titleInView ? 0 : 100,
-                                                opacity: titleInView ? 1 : 0,
-                                            }}
-                                            transition={isMobile ? {} : {
-                                                duration: 0.8,
-                                                delay: titleInView
-                                                    ? (index + 2) * 0.2
-                                                    : 0,
-                                                ease: [0.25, 0.46, 0.45, 0.94],
-                                            }}
+                                            initial={
+                                                !isClient || isMobile
+                                                    ? { opacity: 1 }
+                                                    : { y: 100, opacity: 0 }
+                                            }
+                                            animate={
+                                                !isClient || isMobile
+                                                    ? { opacity: 1 }
+                                                    : {
+                                                          y: titleInView
+                                                              ? 0
+                                                              : 100,
+                                                          opacity: titleInView
+                                                              ? 1
+                                                              : 0,
+                                                      }
+                                            }
+                                            transition={
+                                                !isClient || isMobile
+                                                    ? {}
+                                                    : {
+                                                          duration: 0.8,
+                                                          delay: titleInView
+                                                              ? (index + 2) *
+                                                                0.2
+                                                              : 0,
+                                                          ease: [
+                                                              0.25, 0.46, 0.45,
+                                                              0.94,
+                                                          ],
+                                                      }
+                                            }
                                             style={{ display: "inline-block" }}
                                         >
                                             STEM
@@ -111,16 +172,32 @@ function Frame61564() {
                                 <motion.span
                                     key={index}
                                     className=""
-                                    initial={isMobile ? { opacity: 1 } : { y: 100, opacity: 0 }}
-                                    animate={isMobile ? { opacity: 1 } : {
-                                        y: titleInView ? 0 : 100,
-                                        opacity: titleInView ? 1 : 0,
-                                    }}
-                                    transition={isMobile ? {} : {
-                                        duration: 0.8,
-                                        delay: titleInView ? index * 0.2 : 0,
-                                        ease: [0.25, 0.46, 0.45, 0.94],
-                                    }}
+                                    initial={
+                                        isMobile
+                                            ? { opacity: 1 }
+                                            : { y: 100, opacity: 0 }
+                                    }
+                                    animate={
+                                        isMobile
+                                            ? { opacity: 1 }
+                                            : {
+                                                  y: titleInView ? 0 : 100,
+                                                  opacity: titleInView ? 1 : 0,
+                                              }
+                                    }
+                                    transition={
+                                        isMobile
+                                            ? {}
+                                            : {
+                                                  duration: 0.8,
+                                                  delay: titleInView
+                                                      ? index * 0.2
+                                                      : 0,
+                                                  ease: [
+                                                      0.25, 0.46, 0.45, 0.94,
+                                                  ],
+                                              }
+                                    }
                                     style={{
                                         display: "inline-block",
                                         marginRight: "0.3em",
@@ -140,13 +217,15 @@ function Frame61564() {
 function Frame61766() {
     const subtitleRef = useRef(null);
     const isInView = useInView(subtitleRef, { once: true, margin: "-10%" });
-    const [isMobile, setIsMobile] = useState(false);
+    const [isMobile, setIsMobile] = useState(true);
+    const [isClient, setIsClient] = useState(false);
 
     useEffect(() => {
+        setIsClient(true);
         const checkIsMobile = () => setIsMobile(window.innerWidth < 768);
         checkIsMobile();
-        window.addEventListener('resize', checkIsMobile);
-        return () => window.removeEventListener('resize', checkIsMobile);
+        window.addEventListener("resize", checkIsMobile);
+        return () => window.removeEventListener("resize", checkIsMobile);
     }, []);
 
     return (
@@ -155,17 +234,29 @@ function Frame61766() {
             <div className="flex flex-col gap-[32px] items-center lg:items-start lg:flex-1 lg:ml-[120px] order-2 lg:order-1">
                 {/* Pill with Our Mission & Vision */}
                 <motion.div
-                    className="flex gap-[10px] items-center justify-center lg:justify-start relative shrink-0"
-                    initial={isMobile ? { opacity: 1 } : { x: -30, opacity: 0 }}
-                    animate={isMobile ? { opacity: 1 } : {
-                        x: isInView ? 0 : -30,
-                        opacity: isInView ? 1 : 0,
-                    }}
-                    transition={isMobile ? {} : {
-                        duration: 0.8,
-                        delay: isInView ? 0.2 : 0,
-                        ease: "easeOut",
-                    }}
+                    className="flex gap-[10px] items-center justify-center relative shrink-0 w-full lg:w-auto"
+                    initial={
+                        !isClient || isMobile
+                            ? { opacity: 1 }
+                            : { x: -30, opacity: 0 }
+                    }
+                    animate={
+                        !isClient || isMobile
+                            ? { opacity: 1 }
+                            : {
+                                  x: isInView ? 0 : -30,
+                                  opacity: isInView ? 1 : 0,
+                              }
+                    }
+                    transition={
+                        !isClient || isMobile
+                            ? {}
+                            : {
+                                  duration: 0.8,
+                                  delay: isInView ? 0.2 : 0,
+                                  ease: "easeOut",
+                              }
+                    }
                 >
                     <div className="bg-white border border-[#e0daef] rounded-[16px] px-3 py-2 flex items-center gap-[8px]">
                         <svg
@@ -190,16 +281,28 @@ function Frame61766() {
                 <motion.div
                     ref={subtitleRef}
                     className="flex flex-col gap-[40px] items-center lg:items-start w-full"
-                    initial={isMobile ? { opacity: 1 } : { y: 30, opacity: 0 }}
-                    animate={isMobile ? { opacity: 1 } : {
-                        y: isInView ? 0 : 30,
-                        opacity: isInView ? 1 : 0,
-                    }}
-                    transition={isMobile ? {} : {
-                        duration: 0.8,
-                        delay: isInView ? 1.2 : 0,
-                        ease: "easeOut",
-                    }}
+                    initial={
+                        !isClient || isMobile
+                            ? { opacity: 1 }
+                            : { y: 30, opacity: 0 }
+                    }
+                    animate={
+                        !isClient || isMobile
+                            ? { opacity: 1 }
+                            : {
+                                  y: isInView ? 0 : 30,
+                                  opacity: isInView ? 1 : 0,
+                              }
+                    }
+                    transition={
+                        !isClient || isMobile
+                            ? {}
+                            : {
+                                  duration: 0.8,
+                                  delay: isInView ? 1.2 : 0,
+                                  ease: "easeOut",
+                              }
+                    }
                 >
                     {/* Mission */}
                     <div className="flex flex-col gap-[8px] items-center lg:items-start text-center lg:text-left font-['Nunito:Regular',_sans-serif] font-normal text-[#737992]">
@@ -225,20 +328,32 @@ function Frame61766() {
             </div>
 
             {/* Right side: Image */}
-            <div className="lg:flex-1 flex justify-center lg:justify-end order-1 lg:order-2">
+            <div className="w-full lg:flex-1 flex justify-center order-1 lg:order-2">
                 <motion.div
                     className="bg-center bg-contain bg-no-repeat h-[300px] md:h-[350px] lg:h-[450px] xl:h-[500px] w-[300px] md:w-[350px] lg:w-[450px] xl:w-[500px] opacity-90 shrink-0"
                     style={{ backgroundImage: `url('${heroImage}')` }}
-                    initial={isMobile ? { opacity: 1 } : { x: 30, opacity: 0 }}
-                    animate={isMobile ? { opacity: 1 } : {
-                        x: isInView ? 0 : 30,
-                        opacity: isInView ? 1 : 0,
-                    }}
-                    transition={isMobile ? {} : {
-                        duration: 0.8,
-                        delay: isInView ? 1.4 : 0,
-                        ease: "easeOut",
-                    }}
+                    initial={
+                        !isClient || isMobile
+                            ? { opacity: 1 }
+                            : { x: 30, opacity: 0 }
+                    }
+                    animate={
+                        !isClient || isMobile
+                            ? { opacity: 1 }
+                            : {
+                                  x: isInView ? 0 : 30,
+                                  opacity: isInView ? 1 : 0,
+                              }
+                    }
+                    transition={
+                        !isClient || isMobile
+                            ? {}
+                            : {
+                                  duration: 0.8,
+                                  delay: isInView ? 1.4 : 0,
+                                  ease: "easeOut",
+                              }
+                    }
                 />
             </div>
         </div>

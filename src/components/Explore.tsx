@@ -11,7 +11,7 @@ import { ExploreEducators } from "./ExploreEducators";
 import { GlassmorphicFooter } from "./GlassmorphicFooter";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import ClassProgress from "../imports/ClassProgress";
-import imgKidsLearning from "../assets/24ffbe288bce42e59626a63b1da81bcb21dce94f.png";
+import imgKidsLearning from "../assets/webp/24ffbe288bce42e59626a63b1da81bcb21dce94f.webp";
 
 // Families Section Component
 function FamiliesSection() {

@@ -95,12 +95,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 );
             }
         } else {
-            console.log("✅ Added new donor to Mailchimp audience");
+            // console.log("✅ Added new donor to Mailchimp audience");
         }
 
         // Send thank you email if HTML provided
         if (emailHTML) {
-            console.log("📧 Sending thank you email...");
+            // console.log("📧 Sending thank you email...");
 
             const campaignData = {
                 type: "regular",
@@ -165,7 +165,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 });
 
                 if (sendResponse.ok) {
-                    console.log("✅ Thank you email sent successfully");
+                    // console.log("✅ Thank you email sent successfully");
                 } else {
                     console.error("❌ Failed to send thank you email");
                 }

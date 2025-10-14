@@ -6,7 +6,7 @@ import solutionSvgPaths from "./imports/svg-u6n8qa4seb";
 import buttonSvgPaths from "./imports/svg-5yrfzz9814";
 import imgLaughing1 from "./assets/webp/19dbf2dbedb00b9e97d44bc39a5ca3e1cbafd48e.webp";
 import imgEmpowerHero from "./assets/webp/8d5a368abcc2f3aae0405a99719edc7142e70ae2.webp";
-import imgJadeCharacter from "./assets/webp/3a8603163d49c6cc36d717f3c233ef19737140e8.webp";
+import imgJadeCharacter from "./assets/jade.gif";
 import { motion, useInView } from "motion/react";
 import { useRef, useState, useEffect } from "react";
 import { ConfettiCanvas } from "./components/ConfettiCanvas";
@@ -28,7 +28,7 @@ import { Explore } from "./components/Explore";
 import { ImpactSection } from "./components/ImpactSection";
 import AboutPage from "./components/AboutPage";
 import { PaymentSuccess } from "./components/PaymentSuccess";
-import { SpeedInsights } from '@vercel/speed-insights/react';
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 // Responsive Hero Title Component with Text Reveal Animation
 function Frame61858() {
@@ -744,7 +744,7 @@ function Frame61844({ isInView }: { isInView: boolean }) {
                 style={{ width: "min-content" }}
             >
                 <p className="leading-[44px] md:leading-[44px] sm:leading-[32px]">
-                    <span className="text-[64px] md:text-[64px] sm:text-[32px] tracking-[-3.2px]">
+                    <span className="text-[64px] md:text-[64px] sm:text-[42px] tracking-[-3.2px]">
                         <CountingNumber
                             target={1}
                             isInView={isInView}
@@ -1775,7 +1775,7 @@ function ContactFormTitle({ isInView }: { isInView: boolean }) {
     const words = ["We'd", "love", "to", "hear", "from", "you."];
 
     return (
-        <div className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0">
+        <div className="content-stretch flex flex-col gap-[12px] items-center relative shrink-0">
             {/* Reach Out Badge */}
             <motion.div
                 className="content-stretch flex gap-[10px] items-center justify-center px-[12px] py-[3px] relative rounded-[12px] shrink-0"
@@ -1969,13 +1969,14 @@ function ContactForm({ isInView }: { isInView: boolean }) {
 function JadeCharacter({ isInView }: { isInView: boolean }) {
     return (
         <div className="flex items-center justify-center relative">
-            <ImageWithFallback
+            <img
                 src={imgJadeCharacter}
                 alt="Jade Character Animated GIF"
                 className="w-full h-[300px] md:h-[400px] lg:h-[480px] max-w-[400px] lg:max-w-[420px] object-contain rounded-[24px] md:rounded-[46.083px] mx-auto"
                 style={{
                     imageRendering: "auto",
                 }}
+                loading="eager"
             />
         </div>
     );
@@ -2679,7 +2680,7 @@ export default function App() {
             {showPaymentSuccess && (
                 <PaymentSuccess onClose={handleClosePaymentSuccess} />
             )}
-            
+
             {/* Vercel Speed Insights */}
             <SpeedInsights />
         </div>
