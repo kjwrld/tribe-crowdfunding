@@ -1,11 +1,11 @@
-import type { VercelRequest, VercelResponse } from "@vercel/node";
-import Stripe from "stripe";
+// import type { VercelRequest, VercelResponse } from "@vercel/node";
+const Stripe = require('stripe');
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     apiVersion: "2024-12-18.acacia",
 });
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+module.exports = async function handler(req/* : VercelRequest */, res/* : VercelResponse */) {
     if (req.method !== "POST") {
         return res.status(405).json({ error: "Method not allowed" });
     }
@@ -54,7 +54,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         // console.log("📋 Extracted customer data:", customerData);
 
         res.json({ success: true, data: customerData });
-    } catch (error: any) {
+    } catch (error/* : any */) {
         console.error("❌ Error fetching session data:", error);
         res.status(500).json({
             error: "Failed to fetch session data",
