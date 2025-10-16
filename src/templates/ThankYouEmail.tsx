@@ -135,99 +135,6 @@ export function ThankYouEmailTemplate({
                 </div>
             </div>
 
-            {/* What Happens Next */}
-            <div
-                style={{
-                    textAlign: "left",
-                    marginBottom: "24px",
-                }}
-            >
-                <h3
-                    style={{
-                        fontFamily: "Nunito, Arial, sans-serif",
-                        fontWeight: "bold",
-                        color: "#4c1d95",
-                        fontSize: "16px",
-                        marginBottom: "12px",
-                    }}
-                >
-                    What happens next:
-                </h3>
-                <ul
-                    style={{
-                        padding: "0",
-                        margin: "0",
-                        listStyle: "none",
-                    }}
-                >
-                    <li
-                        style={{
-                            display: "flex",
-                            alignItems: "flex-start",
-                            gap: "8px",
-                            marginBottom: "8px",
-                        }}
-                    >
-                        <span style={{ color: "#16a34a", marginTop: "2px" }}>
-                            ✓
-                        </span>
-                        <span
-                            style={{
-                                fontFamily: "Nunito, Arial, sans-serif",
-                                color: "#6b7280",
-                                fontSize: "14px",
-                            }}
-                        >
-                            You'll receive a confirmation email with your
-                            receipt
-                        </span>
-                    </li>
-                    <li
-                        style={{
-                            display: "flex",
-                            alignItems: "flex-start",
-                            gap: "8px",
-                            marginBottom: "8px",
-                        }}
-                    >
-                        <span style={{ color: "#16a34a", marginTop: "2px" }}>
-                            ✓
-                        </span>
-                        <span
-                            style={{
-                                fontFamily: "Nunito, Arial, sans-serif",
-                                color: "#6b7280",
-                                fontSize: "14px",
-                            }}
-                        >
-                            Your donation directly supports STEM programs for
-                            underrepresented students
-                        </span>
-                    </li>
-                    <li
-                        style={{
-                            display: "flex",
-                            alignItems: "flex-start",
-                            gap: "8px",
-                        }}
-                    >
-                        <span style={{ color: "#16a34a", marginTop: "2px" }}>
-                            ✓
-                        </span>
-                        <span
-                            style={{
-                                fontFamily: "Nunito, Arial, sans-serif",
-                                color: "#6b7280",
-                                fontSize: "14px",
-                            }}
-                        >
-                            You'll receive updates on the impact of your
-                            contribution
-                        </span>
-                    </li>
-                </ul>
-            </div>
-
             {/* Call to Action */}
             <div
                 style={{
@@ -323,31 +230,6 @@ export function generateThankYouEmailHTML(
         <p style="font-family: 'Nunito', Arial, sans-serif; color: #15803d; font-size: 14px; margin: 0;">
           ${type === "monthly" ? "Monthly Subscription" : "One-Time Donation"}
         </p>
-      </div>
-    </div>
-
-    <!-- What Happens Next -->
-    <div style="text-align: left; margin-bottom: 24px;">
-      <h3 style="font-family: 'Nunito', Arial, sans-serif; font-weight: bold; color: #4c1d95; font-size: 16px; margin-bottom: 12px;">
-        What happens next:
-      </h3>
-      <div style="margin-bottom: 8px;">
-        <span style="color: #16a34a; margin-right: 8px;">✓</span>
-        <span style="font-family: 'Nunito', Arial, sans-serif; color: #6b7280; font-size: 14px;">
-          You'll receive a confirmation email with your receipt
-        </span>
-      </div>
-      <div style="margin-bottom: 8px;">
-        <span style="color: #16a34a; margin-right: 8px;">✓</span>
-        <span style="font-family: 'Nunito', Arial, sans-serif; color: #6b7280; font-size: 14px;">
-          Your donation directly supports STEM programs for underrepresented students
-        </span>
-      </div>
-      <div>
-        <span style="color: #16a34a; margin-right: 8px;">✓</span>
-        <span style="font-family: 'Nunito', Arial, sans-serif; color: #6b7280; font-size: 14px;">
-          You'll receive updates on the impact of your contribution
-        </span>
       </div>
     </div>
 
