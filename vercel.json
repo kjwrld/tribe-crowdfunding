@@ -10,7 +10,7 @@
         "api/stripe-webhook.ts": {
             "maxDuration": 30
         },
-        "api/get-session-data.ts": {
+        "api/get-session-data.js": {
             "maxDuration": 30
         },
         "api/mailchimp/donation.ts": {
