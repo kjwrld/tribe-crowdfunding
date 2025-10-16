@@ -61,20 +61,15 @@ async function handleCheckoutCompleted(session/* : Stripe.Checkout.Session */) {
         // Use session data directly from webhook event (no additional API call needed)
         const customerData = {
             sessionId: session.id,
-            paymentIntentId: session.payment_intent?.id || session.payment_intent,
-            customerId: session.customer?.id || session.customer,
+            paymentIntentId: typeof session.payment_intent === 'string' ? session.payment_intent : session.payment_intent?.id,
+            customerId: typeof session.customer === 'string' ? session.customer : session.customer?.id,
             email: session.customer_details?.email,
             name: session.customer_details?.name,
             phone: session.customer_details?.phone,
             address: session.customer_details?.address,
-            amount: session.amount_total / 100,
-            currency: session.currency?.toUpperCase(),
-            paymentStatus: session.payment_status,
-            // Card details may not be available in webhook session - that's OK
-            cardLast4: null,
-            cardBrand: null,
-            cardExpMonth: null,
-            cardExpYear: null,
+            amount: session.amount_total ? session.amount_total / 100 : 0,
+            currency: session.currency?.toUpperCase() || 'USD',
+            paymentStatus: session.payment_status || 'complete',
         };
 
         // Parse name
@@ -102,24 +97,24 @@ async function handleCheckoutCompleted(session/* : Stripe.Checkout.Session */) {
             stripe_session_id: customerData.sessionId,
             stripe_payment_intent_id: customerData.paymentIntentId,
             stripe_customer_id: customerData.customerId,
-            card_last_four: customerData.cardLast4,
-            card_brand: customerData.cardBrand,
-            card_exp_month: customerData.cardExpMonth?.toString(),
-            card_exp_year: customerData.cardExpYear?.toString(),
+            card_last_four: null, // Card details not available in webhook
+            card_brand: null,
+            card_exp_month: null,
+            card_exp_year: null,
             payment_status: "succeeded",
             mailchimp_sent: false,
         });
 
-        // Send to Mailchimp
-        await sendToMailchimp({
-            email: customerData.email,
-            firstName,
-            lastName,
-            amount: customerData.amount.toString(),
-            phone: customerData.phone,
-        });
-
-        console.log("Successfully processed checkout session:", session.id);
+        // Send to Mailchimp (only if we have an email)
+        if (customerData.email && customerData.email !== "no-email-provided@younggiftedbeautiful.org") {
+            await sendToMailchimp({
+                email: customerData.email,
+                firstName,
+                lastName,
+                amount: customerData.amount.toString(),
+                phone: customerData.phone,
+            });
+        }
     } catch (error) {
         console.error("Error processing checkout session:", error);
         throw error;
