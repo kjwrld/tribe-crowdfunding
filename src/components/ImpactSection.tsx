@@ -278,7 +278,7 @@ function PricingTier({
                     </>
                 ) : (
                     <span className="relative z-10 font-['Nunito:Medium',_sans-serif] font-medium text-white text-[16px]">
-                        Give Today
+                        Give Now
                     </span>
                 )}
             </motion.button>

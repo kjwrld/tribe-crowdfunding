@@ -338,11 +338,14 @@ export const CardNav = ({
 
                     {/* Logo in center */}
                     {logo && (
-                        <div className="absolute left-1/2 transform -translate-x-1/2 h-8">
+                        <div className="absolute left-1/2 transform -translate-x-1/2 h-6 md:h-8">
                             <img 
                                 src={logo} 
                                 alt={logoAlt} 
                                 className="h-full w-auto object-contain"
+                                style={{
+                                    filter: menuColor === "#d9ddea" ? "brightness(0) invert(1)" : "none"
+                                }}
                             />
                         </div>
                     )}
@@ -378,7 +381,7 @@ export const CardNav = ({
                                 className="hover:text-[#8615ff] transition-colors duration-200"
                             >
                                 <Gift size={16} />
-                                Give Today
+                                Give
                             </div>
                         </StarBorder>
                     )}

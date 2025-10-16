@@ -105,7 +105,7 @@ export function DonationDialog({
                             } transition-colors duration-200 focus:outline-none`}
                         >
                             <Gift size={16} />
-                            Give Today
+                            Give
                         </button>
                     </StarBorder>
                 )}
