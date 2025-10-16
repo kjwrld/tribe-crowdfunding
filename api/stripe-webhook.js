@@ -58,35 +58,23 @@ async function handleCheckoutCompleted(session/* : Stripe.Checkout.Session */) {
     console.log("Processing completed checkout session:", session.id);
 
     try {
-        // Get expanded session data
-        const expandedSession = await stripe.checkout.sessions.retrieve(
-            session.id,
-            {
-                expand: ["customer", "payment_intent.payment_method"],
-            }
-        );
-
-        // Extract customer data
+        // Use session data directly from webhook event (no additional API call needed)
         const customerData = {
-            sessionId: expandedSession.id,
-            paymentIntentId: expandedSession.payment_intent?.id,
-            customerId:
-                expandedSession.customer?.id || expandedSession.customer,
-            email: expandedSession.customer_details?.email,
-            name: expandedSession.customer_details?.name,
-            phone: expandedSession.customer_details?.phone,
-            address: expandedSession.customer_details?.address,
-            amount: expandedSession.amount_total / 100,
-            currency: expandedSession.currency?.toUpperCase(),
-            paymentStatus: expandedSession.payment_status,
-            cardLast4: expandedSession.payment_intent?.payment_method
-                ?.card?.last4,
-            cardBrand: expandedSession.payment_intent?.payment_method
-                ?.card?.brand,
-            cardExpMonth: expandedSession.payment_intent
-                ?.payment_method?.card?.exp_month,
-            cardExpYear: expandedSession.payment_intent?.payment_method
-                ?.card?.exp_year,
+            sessionId: session.id,
+            paymentIntentId: session.payment_intent?.id || session.payment_intent,
+            customerId: session.customer?.id || session.customer,
+            email: session.customer_details?.email,
+            name: session.customer_details?.name,
+            phone: session.customer_details?.phone,
+            address: session.customer_details?.address,
+            amount: session.amount_total / 100,
+            currency: session.currency?.toUpperCase(),
+            paymentStatus: session.payment_status,
+            // Card details may not be available in webhook session - that's OK
+            cardLast4: null,
+            cardBrand: null,
+            cardExpMonth: null,
+            cardExpYear: null,
         };
 
         // Parse name
