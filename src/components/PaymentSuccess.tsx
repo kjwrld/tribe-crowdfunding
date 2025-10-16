@@ -27,20 +27,9 @@ export function PaymentSuccess({ onClose }: PaymentSuccessProps) {
         if (amount || type || sessionId) {
             setPaymentDetails({ amount, type, sessionId });
 
-            // Process the donation (save to Supabase and send thank you email)
-            if (sessionId && !donationProcessed) {
-                processDonationFromStripeSession(sessionId).then((result) => {
-                    if (result.success) {
-                        // console.log('Donation processed successfully:', result.donationId);
-                        setDonationProcessed(true);
-                    } else {
-                        console.error(
-                            "Failed to process donation:",
-                            result.message
-                        );
-                    }
-                });
-            }
+            // Note: Donation processing is handled automatically by Stripe webhook
+            // No need to manually process here - webhook handles Supabase + MailChimp
+            setDonationProcessed(true);
 
             // Clean up URL
             const newUrl = window.location.pathname;
