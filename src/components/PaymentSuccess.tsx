@@ -91,7 +91,7 @@ export function PaymentSuccess({ onClose }: PaymentSuccessProps) {
                 </motion.h2>
 
                 <motion.p
-                    className="font-['Nunito:Regular',_sans-serif] text-[#6b7280] text-[16px] mb-6"
+                    className="hidden md:block font-['Nunito:Regular',_sans-serif] text-[#6b7280] text-[16px] mb-6"
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ delay: 0.4 }}
