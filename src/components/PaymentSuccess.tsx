@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import { CheckCircle, Heart, ArrowLeft } from "lucide-react";
+import { CheckCircle, Heart, ArrowLeft, X } from "lucide-react";
 import { useDonationFlow } from "../hooks/useDonationFlow";
 
 interface PaymentSuccessProps {
@@ -56,12 +56,20 @@ export function PaymentSuccess({ onClose }: PaymentSuccessProps) {
             exit={{ opacity: 0 }}
         >
             <motion.div
-                className="bg-white rounded-[24px] p-8 max-w-md w-full text-center shadow-2xl"
+                className="bg-white rounded-[24px] p-8 max-w-md w-full text-center shadow-2xl relative"
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.8, opacity: 0 }}
                 transition={{ type: "spring", duration: 0.6 }}
             >
+                {/* X Close Button */}
+                <button
+                    onClick={onClose}
+                    className="absolute top-4 right-4 w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors"
+                    aria-label="Close"
+                >
+                    <X className="w-4 h-4 text-gray-600" />
+                </button>
                 {/* Success Animation */}
                 <motion.div
                     className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6"
@@ -118,55 +126,6 @@ export function PaymentSuccess({ onClose }: PaymentSuccessProps) {
                         </div>
                     </motion.div>
                 )}
-
-                {/* What Happens Next */}
-                <motion.div
-                    className="text-left mb-6"
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.6 }}
-                >
-                    <h3 className="font-['Nunito:Bold',_sans-serif] font-bold text-[#4c1d95] text-[16px] mb-3">
-                        What happens next:
-                    </h3>
-                    <ul className="space-y-2">
-                        <li className="flex items-start gap-2">
-                            <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                            <span className="font-['Nunito:Regular',_sans-serif] text-[#6b7280] text-[14px]">
-                                You'll receive a confirmation email with your
-                                receipt
-                            </span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                            <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                            <span className="font-['Nunito:Regular',_sans-serif] text-[#6b7280] text-[14px]">
-                                Your donation directly supports STEM programs
-                                for underrepresented students
-                            </span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                            <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                            <span className="font-['Nunito:Regular',_sans-serif] text-[#6b7280] text-[14px]">
-                                You'll receive updates on the impact of your
-                                contribution
-                            </span>
-                        </li>
-                    </ul>
-                </motion.div>
-
-                {/* Close Button */}
-                <motion.button
-                    onClick={onClose}
-                    className="w-full bg-gradient-to-r from-[#8614ff] to-[#6d00e0] hover:opacity-90 transition-opacity duration-200 h-[48px] rounded-[16px] shadow-lg flex items-center justify-center gap-2"
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.7 }}
-                >
-                    <ArrowLeft className="w-4 h-4 text-white" />
-                    <span className="font-['Nunito:Medium',_sans-serif] font-medium text-white text-[16px]">
-                        Continue Exploring
-                    </span>
-                </motion.button>
             </motion.div>
         </motion.div>
     );

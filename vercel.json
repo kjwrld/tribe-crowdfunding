@@ -7,13 +7,13 @@
         "api/create-checkout-session.js": {
             "maxDuration": 30
         },
-        "api/stripe-webhook.ts": {
+        "api/stripe-webhook.js": {
             "maxDuration": 30
         },
         "api/get-session-data.js": {
             "maxDuration": 30
         },
-        "api/mailchimp/donation.ts": {
+        "api/mailchimp/donation.js": {
             "maxDuration": 30
         },
         "api/health.js": {

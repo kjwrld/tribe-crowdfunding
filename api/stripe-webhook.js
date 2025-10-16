@@ -1,19 +1,19 @@
-import type { VercelRequest, VercelResponse } from "@vercel/node";
-import Stripe from "stripe";
+// import type { VercelRequest, VercelResponse } from "@vercel/node";
+const Stripe = require('stripe');
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
     apiVersion: "2024-06-20",
 });
 
-const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+module.exports = async function handler(req/* : VercelRequest */, res/* : VercelResponse */) {
     if (req.method !== "POST") {
         return res.status(405).json({ error: "Method not allowed" });
     }
 
-    const sig = req.headers["stripe-signature"] as string;
-    let event: Stripe.Event;
+    const sig = req.headers["stripe-signature"]; // as string
+    let event; // : Stripe.Event
 
     try {
         // Verify webhook signature
@@ -29,17 +29,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     try {
         switch (event.type) {
             case "checkout.session.completed":
-                const session = event.data.object as Stripe.Checkout.Session;
+                const session = event.data.object; // as Stripe.Checkout.Session
                 await handleCheckoutCompleted(session);
                 break;
 
             case "payment_intent.succeeded":
-                const paymentIntent = event.data.object as Stripe.PaymentIntent;
+                const paymentIntent = event.data.object; // as Stripe.PaymentIntent
                 await handlePaymentSucceeded(paymentIntent);
                 break;
 
             case "invoice.payment_succeeded":
-                const invoice = event.data.object as Stripe.Invoice;
+                const invoice = event.data.object; // as Stripe.Invoice
                 await handleInvoicePaymentSucceeded(invoice);
                 break;
 
@@ -54,7 +54,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 }
 
-async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
+async function handleCheckoutCompleted(session/* : Stripe.Checkout.Session */) {
     console.log("Processing completed checkout session:", session.id);
 
     try {
@@ -76,16 +76,16 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
             name: expandedSession.customer_details?.name,
             phone: expandedSession.customer_details?.phone,
             address: expandedSession.customer_details?.address,
-            amount: expandedSession.amount_total! / 100,
+            amount: expandedSession.amount_total / 100,
             currency: expandedSession.currency?.toUpperCase(),
             paymentStatus: expandedSession.payment_status,
-            cardLast4: (expandedSession.payment_intent as any)?.payment_method
+            cardLast4: expandedSession.payment_intent?.payment_method
                 ?.card?.last4,
-            cardBrand: (expandedSession.payment_intent as any)?.payment_method
+            cardBrand: expandedSession.payment_intent?.payment_method
                 ?.card?.brand,
-            cardExpMonth: (expandedSession.payment_intent as any)
+            cardExpMonth: expandedSession.payment_intent
                 ?.payment_method?.card?.exp_month,
-            cardExpYear: (expandedSession.payment_intent as any)?.payment_method
+            cardExpYear: expandedSession.payment_intent?.payment_method
                 ?.card?.exp_year,
         };
 
@@ -124,7 +124,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
 
         // Send to Mailchimp
         await sendToMailchimp({
-            email: customerData.email!,
+            email: customerData.email,
             firstName,
             lastName,
             amount: customerData.amount.toString(),
@@ -138,17 +138,17 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     }
 }
 
-async function handlePaymentSucceeded(paymentIntent: Stripe.PaymentIntent) {
+async function handlePaymentSucceeded(paymentIntent/* : Stripe.PaymentIntent */) {
     console.log("Payment succeeded:", paymentIntent.id);
     // Additional processing if needed
 }
 
-async function handleInvoicePaymentSucceeded(invoice: Stripe.Invoice) {
+async function handleInvoicePaymentSucceeded(invoice/* : Stripe.Invoice */) {
     console.log("Invoice payment succeeded:", invoice.id);
     // Handle recurring subscription payments
 }
 
-async function saveDonationToSupabase(donationData: any) {
+async function saveDonationToSupabase(donationData/* : any */) {
     const { createClient } = require("@supabase/supabase-js");
 
     const supabase = createClient(
@@ -177,7 +177,7 @@ async function saveDonationToSupabase(donationData: any) {
     return data;
 }
 
-async function sendToMailchimp(donationData: any) {
+async function sendToMailchimp(donationData/* : any */) {
     // Generate simple thank you email HTML
     const emailHTML = `
     <!DOCTYPE html>
@@ -204,7 +204,7 @@ async function sendToMailchimp(donationData: any) {
 
     const apiKey = process.env.MAILCHIMP_API_KEY;
     const audienceId = process.env.MAILCHIMP_AUDIENCE_ID;
-    const datacenter = apiKey!.split("-")[1];
+    const datacenter = apiKey.split("-")[1];
 
     // Add to audience
     const mailchimpUrl = `https://${datacenter}.api.mailchimp.com/3.0/lists/${audienceId}/members`;
