@@ -336,6 +336,17 @@ export const CardNav = ({
                         <div className="hamburger-line" />
                     </div>
 
+                    {/* Logo in center */}
+                    {logo && (
+                        <div className="absolute left-1/2 transform -translate-x-1/2 h-8">
+                            <img 
+                                src={logo} 
+                                alt={logoAlt} 
+                                className="h-full w-auto object-contain"
+                            />
+                        </div>
+                    )}
+
                     {customDonationButton || (
                         <StarBorder
                             color="#792bcb"

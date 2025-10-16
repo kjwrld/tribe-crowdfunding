@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Menu, X, ChevronRight } from "lucide-react";
 import { CardNav } from "./CardNav";
 import { DonationDialog } from "./DonationDialog";
+import logoWebp from "../assets/logo.webp";
 
 // Add custom CSS for iOS-style mobile menu animations
 const mobileMenuStyles = `
@@ -274,6 +275,8 @@ export function ResponsiveNav({
         <>
             {/* CardNav for modern navigation */}
             <CardNav
+                logo={logoWebp}
+                logoAlt="YGB Logo"
                 items={cardNavItems}
                 baseColor={
                     isExplorePage
