@@ -2498,7 +2498,7 @@ export default function App() {
         x: number;
         y: number;
     }>({ x: 0, y: 0 });
-    const [showPaymentSuccess, setShowPaymentSuccess] = useState(true); // TEMP: Show for testing
+    const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
 
     // Check for payment success on component mount
     useEffect(() => {
