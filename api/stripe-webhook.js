@@ -127,6 +127,9 @@ async function handleCheckoutCompleted(session/* : Stripe.Checkout.Session */, c
                 amount: customerData.amount.toString(),
                 phone: customerData.phone,
             });
+            
+            // Update Supabase to mark email as sent
+            await updateDonationMailchimpStatus(customerData.sessionId);
         }
     } catch (error) {
         console.error("Error processing checkout session:", error);
@@ -168,6 +171,31 @@ async function saveDonationToSupabase(donationData/* : any */) {
     }
 
     return data;
+}
+
+async function updateDonationMailchimpStatus(sessionId) {
+    const { createClient } = require("@supabase/supabase-js");
+
+    const supabase = createClient(
+        process.env.VITE_SUPABASE_URL,
+        process.env.SUPABASE_SERVICE_ROLE_KEY,
+        {
+            auth: {
+                autoRefreshToken: false,
+                persistSession: false,
+            },
+        }
+    );
+
+    const { error } = await supabase
+        .from("donations")
+        .update({ mailchimp_sent: true })
+        .eq("stripe_session_id", sessionId);
+
+    if (error) {
+        console.error("Supabase update error:", error);
+        throw error;
+    }
 }
 
 async function sendToMailchimp(donationData/* : any */) {
@@ -214,7 +242,7 @@ async function sendToMailchimp(donationData/* : any */) {
         tags: ["donor"],
     };
 
-    await fetch(mailchimpUrl, {
+    const response = await fetch(mailchimpUrl, {
         method: "POST",
         headers: {
             Authorization: `Bearer ${apiKey}`,
@@ -222,6 +250,124 @@ async function sendToMailchimp(donationData/* : any */) {
         },
         body: JSON.stringify(subscriberData),
     });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+        // Handle member already exists - update instead
+        if (response.status === 400 && result.title === "Member Exists") {
+            const updateUrl = `https://${datacenter}.api.mailchimp.com/3.0/lists/${audienceId}/members/${donationData.email}`;
+            await fetch(updateUrl, {
+                method: "PATCH",
+                headers: {
+                    Authorization: `Bearer ${apiKey}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    merge_fields: {
+                        FNAME: donationData.firstName,
+                        LNAME: donationData.lastName || "",
+                        AMOUNT: donationData.amount,
+                        PHONE: donationData.phone || "",
+                    },
+                    tags: ["donor"],
+                }),
+            });
+        } else {
+            throw new Error(`MailChimp error: ${result.detail || result.title}`);
+        }
+    }
+
+    // Always send thank you email (for both new and existing members)
+    await sendThankYouEmail(donationData, apiKey, audienceId, datacenter);
+}
+
+async function sendThankYouEmail(donationData, apiKey, audienceId, datacenter) {
+    const emailHTML = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <title>Thank You - YGBverse</title>
+    </head>
+    <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <div style="text-align: center; background: #f8f9fa; padding: 40px; border-radius: 10px;">
+        <h1 style="color: #4c1d95;">Thank You, ${donationData.firstName}!</h1>
+        <p style="font-size: 18px; color: #6b7280;">Your generous $${donationData.amount} donation will help transform STEM education.</p>
+        <div style="background: #dcfce7; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <p style="color: #16a34a; font-weight: bold;">Donation Confirmed: $${donationData.amount}</p>
+        </div>
+        <p>Your donation directly supports STEM programs for underrepresented students.</p>
+        <p style="color: #9ca3af; font-size: 12px; margin-top: 30px;">
+          This email was sent by YGBVerse. Contact us at info@younggiftedbeautiful.org
+        </p>
+      </div>
+    </body>
+    </html>
+  `;
+
+    const campaignData = {
+        type: "regular",
+        recipients: {
+            list_id: audienceId,
+            segment_opts: {
+                match: "all",
+                conditions: [
+                    {
+                        condition_type: "EmailAddress",
+                        field: "EMAIL",
+                        op: "is",
+                        value: donationData.email,
+                    },
+                ],
+            },
+        },
+        settings: {
+            subject_line: `Thank you for your $${donationData.amount} donation!`,
+            title: `Thank You - ${donationData.firstName}`,
+            from_name: "YGBverse",
+            reply_to: "info@younggiftedbeautiful.org",
+            auto_footer: false,
+            inline_css: true,
+        },
+    };
+
+    const campaignUrl = `https://${datacenter}.api.mailchimp.com/3.0/campaigns`;
+    const campaignResponse = await fetch(campaignUrl, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${apiKey}`,
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(campaignData),
+    });
+
+    if (campaignResponse.ok) {
+        const campaign = await campaignResponse.json();
+
+        // Set campaign content
+        const contentUrl = `https://${datacenter}.api.mailchimp.com/3.0/campaigns/${campaign.id}/content`;
+        await fetch(contentUrl, {
+            method: "PUT",
+            headers: {
+                Authorization: `Bearer ${apiKey}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                html: emailHTML,
+            }),
+        });
+
+        // Send campaign
+        const sendUrl = `https://${datacenter}.api.mailchimp.com/3.0/campaigns/${campaign.id}/actions/send`;
+        await fetch(sendUrl, {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${apiKey}`,
+                "Content-Type": "application/json",
+            },
+        });
+    }
 }
 
 export const config = {
