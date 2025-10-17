@@ -26,26 +26,26 @@ module.exports = async function handler(req/* : VercelRequest */, res/* : Vercel
     }
 
     // Handle the event
-    console.log("🎯 WEBHOOK RECEIVED EVENT:", event.type, "ID:", event.id);
+    
     try {
         switch (event.type) {
             case "checkout.session.completed":
                 const session = event.data.object; // as Stripe.Checkout.Session
-                await handleCheckoutCompleted(session);
+                await handleCheckoutCompleted(session, event.account);
                 break;
 
             case "payment_intent.succeeded":
                 const paymentIntent = event.data.object; // as Stripe.PaymentIntent
-                await handlePaymentSucceeded(paymentIntent);
+                await handlePaymentSucceeded(paymentIntent, event.account);
                 break;
 
             case "invoice.payment_succeeded":
                 const invoice = event.data.object; // as Stripe.Invoice
-                await handleInvoicePaymentSucceeded(invoice);
+                await handleInvoicePaymentSucceeded(invoice, event.account);
                 break;
 
             default:
-                console.log(`Unhandled event type: ${event.type}`);
+                // Unhandled event type
         }
 
         res.status(200).json({ received: true });
@@ -55,11 +55,9 @@ module.exports = async function handler(req/* : VercelRequest */, res/* : Vercel
     }
 }
 
-async function handleCheckoutCompleted(session/* : Stripe.Checkout.Session */) {
-    console.log("🚀 WEBHOOK: Processing completed checkout session:", session.id);
-
+async function handleCheckoutCompleted(session/* : Stripe.Checkout.Session */, connectAccountId) {
     try {
-        // Use session data directly from webhook event (no additional API call needed)
+        // Extract data from the actual event object structure
         const customerData = {
             sessionId: session.id,
             paymentIntentId: typeof session.payment_intent === 'string' ? session.payment_intent : session.payment_intent?.id,
@@ -67,49 +65,47 @@ async function handleCheckoutCompleted(session/* : Stripe.Checkout.Session */) {
             email: session.customer_details?.email,
             name: session.customer_details?.name,
             phone: session.customer_details?.phone,
-            address: session.customer_details?.address,
+            // Use billing address from customer_details (primary) or shipping from collected_information
+            address: session.customer_details?.address || session.collected_information?.shipping_details?.address,
             amount: session.amount_total ? session.amount_total / 100 : 0,
             currency: session.currency?.toUpperCase() || 'USD',
-            paymentStatus: session.payment_status || 'complete',
+            paymentStatus: session.payment_status === 'paid' ? 'succeeded' : session.payment_status,
+            donationType: session.metadata?.donation_type || (session.mode === 'subscription' ? 'monthly' : 'one-time'),
         };
 
-        // Parse name
-        const nameParts = customerData.name?.split(" ") || [];
+        // Parse name - handle both full name formats
+        const nameParts = customerData.name?.trim().split(/\s+/) || [];
         const firstName = nameParts[0] || "Anonymous Donor";
-        const lastName = nameParts.slice(1).join(" ") || undefined;
+        const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : null;
 
         // Save to Supabase
         await saveDonationToSupabase({
-            email:
-                customerData.email ||
-                "no-email-provided@younggiftedbeautiful.org",
+            email: customerData.email || "no-email-provided@younggiftedbeautiful.org",
             first_name: firstName,
             last_name: lastName,
-            phone: customerData.phone,
-            address_line1: customerData.address?.line1,
-            address_line2: customerData.address?.line2,
-            city: customerData.address?.city,
-            state: customerData.address?.state,
-            postal_code: customerData.address?.postal_code,
-            country: customerData.address?.country,
+            phone: customerData.phone || null,
+            address_line1: customerData.address?.line1 || null,
+            address_line2: customerData.address?.line2 || null,
+            city: customerData.address?.city || null,
+            state: customerData.address?.state || null,
+            postal_code: customerData.address?.postal_code || null,
+            country: customerData.address?.country || null,
             amount: customerData.amount,
-            currency: customerData.currency || "USD",
-            donation_type: "one-time",
+            currency: customerData.currency,
+            donation_type: customerData.donationType,
             stripe_session_id: customerData.sessionId,
-            stripe_payment_intent_id: customerData.paymentIntentId,
-            stripe_customer_id: customerData.customerId,
-            card_last_four: null, // Card details not available in webhook
+            stripe_payment_intent_id: customerData.paymentIntentId || null,
+            stripe_customer_id: customerData.customerId || null,
+            card_last_four: null,
             card_brand: null,
             card_exp_month: null,
             card_exp_year: null,
-            payment_status: "succeeded",
+            payment_status: customerData.paymentStatus,
             mailchimp_sent: false,
         });
 
-        // Send to Mailchimp (only if we have an email)
-        console.log("📧 CHECKING EMAIL:", customerData.email);
+        // Send to Mailchimp (only if we have a valid email)
         if (customerData.email && customerData.email !== "no-email-provided@younggiftedbeautiful.org") {
-            console.log("✅ SENDING TO MAILCHIMP:", customerData.email, "Amount:", customerData.amount);
             await sendToMailchimp({
                 email: customerData.email,
                 firstName,
@@ -117,9 +113,6 @@ async function handleCheckoutCompleted(session/* : Stripe.Checkout.Session */) {
                 amount: customerData.amount.toString(),
                 phone: customerData.phone,
             });
-            console.log("📬 MAILCHIMP CALL COMPLETED");
-        } else {
-            console.log("❌ SKIPPING MAILCHIMP - No valid email or email is placeholder");
         }
     } catch (error) {
         console.error("Error processing checkout session:", error);
@@ -127,13 +120,11 @@ async function handleCheckoutCompleted(session/* : Stripe.Checkout.Session */) {
     }
 }
 
-async function handlePaymentSucceeded(paymentIntent/* : Stripe.PaymentIntent */) {
-    console.log("Payment succeeded:", paymentIntent.id);
+async function handlePaymentSucceeded(paymentIntent/* : Stripe.PaymentIntent */, connectAccountId) {
     // Additional processing if needed
 }
 
-async function handleInvoicePaymentSucceeded(invoice/* : Stripe.Invoice */) {
-    console.log("Invoice payment succeeded:", invoice.id);
+async function handleInvoicePaymentSucceeded(invoice/* : Stripe.Invoice */, connectAccountId) {
     // Handle recurring subscription payments
 }
 
@@ -162,7 +153,6 @@ async function saveDonationToSupabase(donationData/* : any */) {
         throw error;
     }
 
-    console.log("Saved donation to Supabase:", data.id);
     return data;
 }
 
@@ -218,8 +208,6 @@ async function sendToMailchimp(donationData/* : any */) {
         },
         body: JSON.stringify(subscriberData),
     });
-
-    console.log("Added donor to Mailchimp audience");
 }
 
 export const config = {
