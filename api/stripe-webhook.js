@@ -26,6 +26,7 @@ module.exports = async function handler(req/* : VercelRequest */, res/* : Vercel
     }
 
     // Handle the event
+    console.log("🎯 WEBHOOK RECEIVED EVENT:", event.type, "ID:", event.id);
     try {
         switch (event.type) {
             case "checkout.session.completed":
@@ -55,7 +56,7 @@ module.exports = async function handler(req/* : VercelRequest */, res/* : Vercel
 }
 
 async function handleCheckoutCompleted(session/* : Stripe.Checkout.Session */) {
-    console.log("Processing completed checkout session:", session.id);
+    console.log("🚀 WEBHOOK: Processing completed checkout session:", session.id);
 
     try {
         // Use session data directly from webhook event (no additional API call needed)
@@ -106,7 +107,9 @@ async function handleCheckoutCompleted(session/* : Stripe.Checkout.Session */) {
         });
 
         // Send to Mailchimp (only if we have an email)
+        console.log("📧 CHECKING EMAIL:", customerData.email);
         if (customerData.email && customerData.email !== "no-email-provided@younggiftedbeautiful.org") {
+            console.log("✅ SENDING TO MAILCHIMP:", customerData.email, "Amount:", customerData.amount);
             await sendToMailchimp({
                 email: customerData.email,
                 firstName,
@@ -114,6 +117,9 @@ async function handleCheckoutCompleted(session/* : Stripe.Checkout.Session */) {
                 amount: customerData.amount.toString(),
                 phone: customerData.phone,
             });
+            console.log("📬 MAILCHIMP CALL COMPLETED");
+        } else {
+            console.log("❌ SKIPPING MAILCHIMP - No valid email or email is placeholder");
         }
     } catch (error) {
         console.error("Error processing checkout session:", error);
