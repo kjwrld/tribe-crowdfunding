@@ -12,12 +12,26 @@ module.exports = async function handler(req/* : VercelRequest */, res/* : Vercel
         return res.status(405).json({ error: "Method not allowed" });
     }
 
+    // Get raw body as string for signature verification
+    let body;
+    if (Buffer.isBuffer(req.body)) {
+        body = req.body.toString('utf8');
+    } else if (typeof req.body === 'string') {
+        body = req.body;
+    } else {
+        // Fallback: try to get raw body from chunks
+        const chunks = [];
+        req.on('data', chunk => chunks.push(chunk));
+        await new Promise(resolve => req.on('end', resolve));
+        body = Buffer.concat(chunks).toString('utf8');
+    }
+
     const sig = req.headers["stripe-signature"]; // as string
     let event; // : Stripe.Event
 
     try {
-        // Verify webhook signature
-        event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+        // Verify webhook signature with raw body
+        event = stripe.webhooks.constructEvent(body, sig, endpointSecret);
     } catch (err) {
         console.error("Webhook signature verification failed:", err);
         return res
@@ -212,8 +226,6 @@ async function sendToMailchimp(donationData/* : any */) {
 
 export const config = {
     api: {
-        bodyParser: {
-            sizeLimit: "1mb",
-        },
+        bodyParser: false,
     },
 };
