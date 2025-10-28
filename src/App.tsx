@@ -975,7 +975,7 @@ function CyclingStatistic({
 }) {
     const statistics = [
         {
-            number: "1",
+            number: "10",
             description:
                 "of heroes in kids' books and games reflect students of color.",
             title: "Representation Gap",
